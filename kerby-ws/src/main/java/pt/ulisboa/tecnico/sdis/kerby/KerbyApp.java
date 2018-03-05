@@ -1,6 +1,11 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-
+/**
+ * Kerby Web Service application.
+ * 
+ * @author Miguel Pardal
+ *
+ */
 public class KerbyApp {
 
 	public static void main(String[] args) throws Exception {
@@ -10,18 +15,17 @@ public class KerbyApp {
 			System.err.println("Usage: java " + KerbyApp.class.getName() + " wsURL OR uddiURL wsName wsURL");
 			return;
 		}
-		
+
 		String uddiURL = null;
 		String wsName = null;
 		String wsURL = null;
-		
-		
+
 		// Create server implementation object, according to options
 		KerbyEndpointManager endpoint = null;
 		if (args.length == 1) {
 			wsURL = args[0];
 			endpoint = new KerbyEndpointManager(wsURL);
-			//Station.getInstance().setId(wsURL);
+			// Station.getInstance().setId(wsURL);
 
 		} else if (args.length >= 3) {
 			uddiURL = args[0];
@@ -29,7 +33,7 @@ public class KerbyApp {
 			wsURL = args[2];
 			endpoint = new KerbyEndpointManager(uddiURL, wsName, wsURL);
 			endpoint.setVerbose(true);
-			//Station.getInstance().setId(wsName);
+			// Station.getInstance().setId(wsName);
 		}
 
 		try {

@@ -2,8 +2,13 @@ package pt.ulisboa.tecnico.sdis.kerby;
 
 import javax.jws.WebService;
 
-
-@WebService(endpointInterface="pt.ulisboa.tecnico.sdis.kerby.KerbyPortType")
+/**
+ * Kerby Web Service implementation class.
+ * 
+ * @author Miguel Pardal
+ *
+ */
+@WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.kerby.KerbyPortType")
 public class KerbyPortImpl implements KerbyPortType {
 
 	// end point manager
@@ -13,8 +18,10 @@ public class KerbyPortImpl implements KerbyPortType {
 		this.endpointManager = endpointManager;
 	}
 
-	public String sayHello(String name) {
-		return "Hello " + name + "!";
+	@Override
+	public TicketResponse requestTicket(String client, String server, long nounce) throws BadTicketRequest {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
