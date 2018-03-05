@@ -4,7 +4,7 @@
     <!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
     <groupId>pt.ulisboa.tecnico.sdis</groupId>
-    <artifactId>kerby-server</artifactId>
+    <artifactId>kerby-ws</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -69,4 +69,11 @@
         </plugins>
     </build>
 
+    <dependencies>
+    	<dependency>
+    		<groupId>pt.ulisboa.tecnico.sdis</groupId>
+    		<artifactId>kerby-lib</artifactId>
+    		<version>1.0-SNAPSHOT</version>
+    	</dependency>
+    </dependencies>
 </project>
