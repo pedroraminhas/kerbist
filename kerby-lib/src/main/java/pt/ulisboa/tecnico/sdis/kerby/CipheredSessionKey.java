@@ -4,19 +4,19 @@ import java.security.Key;
 import java.util.Arrays;
 
 /**
- * Immutable class that represents a ciphered Kerberos ticket.
+ * Immutable class that represents a ciphered Kerberos session key.
  * 
  * @author Miguel Pardal
  *
  */
-public class CipheredTicket {
+public class CipheredSessionKey {
 
 	private byte[] cipherData;
 
 	/**
 	 * @param cipherData
 	 */
-	public CipheredTicket(byte[] cipherData) {
+	public CipheredSessionKey(byte[] cipherData) {
 		super();
 		this.cipherData = cipherData;
 	}
@@ -28,10 +28,10 @@ public class CipheredTicket {
 	 */
 	@Override
 	public String toString() {
-		return "CipheredTicket [cipherData=" + Arrays.toString(cipherData) + "]";
+		return "CipheredSessionKey [cipherData=" + Arrays.toString(cipherData) + "]";
 	}
 
-	public Ticket decipher(Key key) throws KerbyException {
+	public SessionKey decipher(Key key) throws KerbyException {
 		return null;
 		// TODO
 	}

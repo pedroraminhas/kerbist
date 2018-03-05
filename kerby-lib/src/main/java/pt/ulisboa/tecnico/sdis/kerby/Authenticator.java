@@ -3,6 +3,12 @@ package pt.ulisboa.tecnico.sdis.kerby;
 import java.security.Key;
 import java.time.Instant;
 
+/**
+ * Immutable class that represents a Kerberos authenticator.
+ * 
+ * @author Miguel Pardal
+ *
+ */
 public class Authenticator {
 
 	private String x;
@@ -32,7 +38,9 @@ public class Authenticator {
 		return timeRequest;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -40,7 +48,9 @@ public class Authenticator {
 		return "Authenticator [clientId=" + x + ", timeRequest=" + timeRequest + "]";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -52,7 +62,9 @@ public class Authenticator {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -77,11 +89,9 @@ public class Authenticator {
 		return true;
 	}
 
-	
 	public CipheredAuthenticator cipher(Key key) throws KerbyException {
 		return null;
 		// TODO
 	}
 
-	
 }

@@ -1,12 +1,12 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-import java.util.Arrays;
 import java.security.Key;
+import java.util.Arrays;
 
 /**
- * Immutable class that represents a ciphered Kerby authenticator.
+ * Immutable class that represents a ciphered Kerberos authenticator.
  * 
- * @author Miguel
+ * @author Miguel Pardal
  *
  */
 public class CipheredAuthenticator {
@@ -21,7 +21,9 @@ public class CipheredAuthenticator {
 		this.cipherData = cipherData;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -29,10 +31,9 @@ public class CipheredAuthenticator {
 		return "CipheredAuthenticator [cipherData=" + Arrays.toString(cipherData) + "]";
 	}
 
-	
 	public Authenticator decipher(Key key) throws KerbyException {
 		return null;
 		// TODO
 	}
-	
+
 }

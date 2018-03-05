@@ -3,6 +3,12 @@ package pt.ulisboa.tecnico.sdis.kerby;
 import java.security.Key;
 import java.time.Instant;
 
+/**
+ * Immutable class that represents a Kerberos ticket.
+ * 
+ * @author Miguel Pardal
+ *
+ */
 public class Ticket {
 
 	private String x;
@@ -10,8 +16,7 @@ public class Ticket {
 	private java.time.Instant time1;
 	private java.time.Instant time2;
 	private Key keyXY;
-	
-	
+
 	/**
 	 * @param clientId
 	 * @param serverId
@@ -28,14 +33,12 @@ public class Ticket {
 		this.keyXY = keyXY;
 	}
 
-
 	/**
 	 * @return the identifier of x
 	 */
 	public String getX() {
 		return x;
 	}
-
 
 	/**
 	 * @return the identifier of y
@@ -44,14 +47,12 @@ public class Ticket {
 		return y;
 	}
 
-
 	/**
 	 * @return the time1
 	 */
 	public java.time.Instant getTime1() {
 		return time1;
 	}
-
 
 	/**
 	 * @return the time2
@@ -60,7 +61,6 @@ public class Ticket {
 		return time2;
 	}
 
-
 	/**
 	 * @return the keyXY
 	 */
@@ -68,22 +68,22 @@ public class Ticket {
 		return keyXY;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Ticket [clientId=" + x + ", ServerId=" + y + ", time1=" + time1 + ", time2=" + time2
-				+ ", keyXY=" + keyXY + "]";
+		return "Ticket [clientId=" + x + ", ServerId=" + y + ", time1=" + time1 + ", time2=" + time2 + ", keyXY="
+				+ keyXY + "]";
 	}
 
-
-	//TODO hashCode and equals
+	// TODO hashCode and equals
 
 	public CipheredTicket cipher(Key key) throws KerbyException {
 		return null;
 		// TODO
 	}
-	
+
 }
