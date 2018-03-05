@@ -8,6 +8,8 @@ package pt.ulisboa.tecnico.sdis.kerby;
  */
 public class KerbyException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
 	public KerbyException() {
 	}
 
