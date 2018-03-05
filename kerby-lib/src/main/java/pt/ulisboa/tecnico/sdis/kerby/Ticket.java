@@ -5,8 +5,8 @@ import java.time.Instant;
 
 public class Ticket {
 
-	private String clientId;
-	private String ServerId;
+	private String x;
+	private String y;
 	private java.time.Instant time1;
 	private java.time.Instant time2;
 	private Key keyXY;
@@ -19,10 +19,10 @@ public class Ticket {
 	 * @param time2
 	 * @param keyXY
 	 */
-	public Ticket(String clientId, String serverId, Instant time1, Instant time2, Key keyXY) {
+	public Ticket(String x, String y, Instant time1, Instant time2, Key keyXY) {
 		super();
-		this.clientId = clientId;
-		ServerId = serverId;
+		this.x = x;
+		this.y = y;
 		this.time1 = time1;
 		this.time2 = time2;
 		this.keyXY = keyXY;
@@ -30,18 +30,18 @@ public class Ticket {
 
 
 	/**
-	 * @return the clientId
+	 * @return the identifier of x
 	 */
-	public String getClientId() {
-		return clientId;
+	public String getX() {
+		return x;
 	}
 
 
 	/**
-	 * @return the serverId
+	 * @return the identifier of y
 	 */
-	public String getServerId() {
-		return ServerId;
+	public String getY() {
+		return y;
 	}
 
 
@@ -74,11 +74,16 @@ public class Ticket {
 	 */
 	@Override
 	public String toString() {
-		return "Ticket [clientId=" + clientId + ", ServerId=" + ServerId + ", time1=" + time1 + ", time2=" + time2
+		return "Ticket [clientId=" + x + ", ServerId=" + y + ", time1=" + time1 + ", time2=" + time2
 				+ ", keyXY=" + keyXY + "]";
 	}
 
 
 	//TODO hashCode and equals
+
+	public CipheredTicket cipher(Key key) throws KerbyException {
+		return null;
+		// TODO
+	}
 	
 }

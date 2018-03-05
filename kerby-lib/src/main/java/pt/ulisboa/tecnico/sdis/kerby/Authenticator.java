@@ -5,7 +5,7 @@ import java.time.Instant;
 
 public class Authenticator {
 
-	private String clientId;
+	private String x;
 	private java.time.Instant timeRequest;
 
 	/**
@@ -14,15 +14,15 @@ public class Authenticator {
 	 */
 	public Authenticator(String clientId, Instant timeRequest) {
 		super();
-		this.clientId = clientId;
+		this.x = clientId;
 		this.timeRequest = timeRequest;
 	}
 
 	/**
-	 * @return the clientId
+	 * @return the identifier of x
 	 */
-	public String getClientId() {
-		return clientId;
+	public String getX() {
+		return x;
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class Authenticator {
 	 */
 	@Override
 	public String toString() {
-		return "Authenticator [clientId=" + clientId + ", timeRequest=" + timeRequest + "]";
+		return "Authenticator [clientId=" + x + ", timeRequest=" + timeRequest + "]";
 	}
 
 	/* (non-Javadoc)
@@ -47,7 +47,7 @@ public class Authenticator {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((clientId == null) ? 0 : clientId.hashCode());
+		result = prime * result + ((x == null) ? 0 : x.hashCode());
 		result = prime * result + ((timeRequest == null) ? 0 : timeRequest.hashCode());
 		return result;
 	}
@@ -64,10 +64,10 @@ public class Authenticator {
 		if (getClass() != obj.getClass())
 			return false;
 		Authenticator other = (Authenticator) obj;
-		if (clientId == null) {
-			if (other.clientId != null)
+		if (x == null) {
+			if (other.x != null)
 				return false;
-		} else if (!clientId.equals(other.clientId))
+		} else if (!x.equals(other.x))
 			return false;
 		if (timeRequest == null) {
 			if (other.timeRequest != null)
@@ -76,5 +76,12 @@ public class Authenticator {
 			return false;
 		return true;
 	}
+
+	
+	public CipheredAuthenticator cipher(Key key) throws KerbyException {
+		return null;
+		// TODO
+	}
+
 	
 }
