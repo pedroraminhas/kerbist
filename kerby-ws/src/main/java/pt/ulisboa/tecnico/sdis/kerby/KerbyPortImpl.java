@@ -19,9 +19,10 @@ public class KerbyPortImpl implements KerbyPortType {
 	}
 
 	@Override
-	public TicketResponse requestTicket(String client, String server, long nounce) throws BadTicketRequest {
+	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce) throws BadTicketRequest {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }
