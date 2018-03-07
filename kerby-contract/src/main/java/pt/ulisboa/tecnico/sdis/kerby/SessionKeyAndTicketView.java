@@ -12,14 +12,17 @@ public class SessionKeyAndTicketView implements Serializable {
 	public SealedView getSessionKey() {
 		return sessionKey;
 	}
+
 	public void setSessionKey(SealedView sessionKey) {
 		this.sessionKey = sessionKey;
 	}
+
 	public SealedView getTicket() {
 		return ticket;
 	}
+
 	public void setTicket(SealedView ticket) {
 		this.ticket = ticket;
 	}
-	
+
 }
