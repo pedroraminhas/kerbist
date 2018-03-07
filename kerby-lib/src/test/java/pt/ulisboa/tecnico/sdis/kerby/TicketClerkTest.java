@@ -2,119 +2,99 @@ package pt.ulisboa.tecnico.sdis.kerby;
 
 import org.junit.*;
 import org.w3c.dom.Document;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlToDate;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.*;
 
 import static org.junit.Assert.*;
 
 import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import static javax.xml.bind.DatatypeConverter.printHexBinary;
-
-import javax.xml.bind.*;
-
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Schema;
 
-import org.xml.sax.SAXException;
+import static javax.xml.bind.DatatypeConverter.printHexBinary;
+
 
 /**
- * Test suite
+ *  Test suite
  */
-public class TicketXmlTest {
+public class TicketClerkTest {
 
-	// static members
-	private static DatatypeFactory datatypeFactory;
+    // static members
 
-	// one-time initialization and clean-up
 
-	@BeforeClass
-	public static void oneTimeSetUp() throws DatatypeConfigurationException {
-		datatypeFactory = DatatypeFactory.newInstance();
-	}
+    // one-time initialization and clean-up
 
-	@AfterClass
-	public static void oneTimeTearDown() {
+    @BeforeClass
+    public static void oneTimeSetUp() {
 
-	}
+    }
 
-	// members
-	private TicketView ticket;
+    @AfterClass
+    public static void oneTimeTearDown() {
 
-	// initialization and clean-up for each test
+    }
 
-	@Before
-	public void setUp() {
 
-	}
+    // members
+    private TicketClerk clerk;
 
-	@After
-	public void tearDown() {
-	}
 
-	// helpers
 
-	private XMLGregorianCalendar dateToXML(Date date) {
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTime(date);
-		return datatypeFactory.newXMLGregorianCalendar(gc);
-	}
+    // initialization and clean-up for each test
 
-	private Date xmlToDate(XMLGregorianCalendar xgc) {
-		return xgc.toGregorianCalendar().getTime();
-	}
+    @Before
+    public void setUp() {
+    	clerk = new TicketClerk();
+    }
 
-	private TicketView newTicketView(String x, String y, Date time1, Date time2, Key key) {
-		TicketView ticket = new TicketView();
-		ticket.setX(x);
-		ticket.setY(y);
-		ticket.setTime1(dateToXML(time1));
-		ticket.setTime2(dateToXML(time2));
-		ticket.setEncodedKeyXY(key.getEncoded());
-		return ticket;
-	}
+    @After
+    public void tearDown() {
+    	clerk = null;
+    }
 
-	private TicketView newTestTicket() throws NoSuchAlgorithmException {
-		final Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
-		final Date t1 = calendar.getTime();
-		calendar.add(Calendar.SECOND, 60);
-		final Date t2 = calendar.getTime();
+    
+    // helpers
 
-		final Key key = generateKey("AES", 256);
+    private TicketView newTestTicket(Date t1, Date t2, Key key) throws NoSuchAlgorithmException {
+    	TicketView ticket = clerk.newTicketView("C", "S", t1, t2, key);
+    	return ticket;
+    }
+    
+    private TicketView newTestTicket(Date t1, Date t2) throws NoSuchAlgorithmException {
+    	final Key key = SecurityHelper.generateKey("AES", 256);
+    	TicketView ticket = clerk.newTicketView("C", "S", t1, t2, key);
+    	return ticket;
+    }
+    
+    private TicketView newTestTicket() throws NoSuchAlgorithmException {
+    	final Calendar calendar = Calendar.getInstance(); // gets a calendar using the default time zone and locale.
+    	final Date t1 = calendar.getTime();
+    	calendar.add(Calendar.SECOND, 60);
+    	final Date t2 = calendar.getTime();
+    	return newTestTicket(t1, t2);
+    }
 
-		TicketView ticket = newTicketView("C", "S", t1, t2, key);
-		return ticket;
-	}
 
-	private Key generateKey(String algorithm, int keySize) throws NoSuchAlgorithmException {
-		KeyGenerator keyGen = KeyGenerator.getInstance(algorithm);
-		keyGen.init(keySize);
-		Key key = keyGen.generateKey();
-		return key;
-	}
-
-	// tests
+    // tests
 
 	@Test
 	public void testCreateTicket() throws Exception {
@@ -123,10 +103,8 @@ public class TicketXmlTest {
 		final Date t1 = calendar.getTime();
 		calendar.add(Calendar.SECOND, 60);
 		final Date t2 = calendar.getTime();
-
-		final Key key = generateKey("AES", 256);
-
-		TicketView ticket = newTicketView("C", "S", t1, t2, key);
+    	final Key key = SecurityHelper.generateKey("AES", 256);
+		TicketView ticket = newTestTicket(t1, t2, key);
 
 		assertEquals(/* expected */ "C", /* actual */ ticket.getX());
 		assertEquals(/* expected */ "S", /* actual */ ticket.getY());
@@ -229,4 +207,20 @@ public class TicketXmlTest {
 	// assertEquals(/* expected */ ticket, /* actual */ decipheredTicket);
 	// }
 
+    
+    @Test
+    public void testSealTicket() throws Exception {
+    	TicketView ticket = newTestTicket();
+
+    	// seal ticket with server key
+    	final Key serverKey = generateKey("AES", 128);
+    	SealedView sealedTicket = clerk.seal(ticket, key);
+    	
+    	// decipher ticket with server key
+    	TicketView decipheredTicket = clerk.unseal(sealedTicket, key);
+    	
+    	// compare that obtained ticket is equal to original ticket
+    	assertEquals(/*expected*/ ticket, /*actual*/ decipheredTicket);
+    }
+    
 }
