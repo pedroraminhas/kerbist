@@ -25,7 +25,7 @@
 		<ws.name>kerby</ws.name>
 		<ws.host>localhost</ws.host>
 		<ws.port>8888</ws.port>
-					<ws.url>http://${ws.host}:${ws.port}/kerby</ws.url>
+		<ws.url>http://${ws.host}:${ws.port}/kerby</ws.url>
 	</properties>
 
 	<dependencies>

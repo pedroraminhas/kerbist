@@ -17,7 +17,8 @@ public class Kerby implements KerbyPortType {
 	}
 
 	@Override
-	public void dummy(SessionKeyView skv, TicketView tv) {
+	public String dummy(SessionKeyView skv, TicketView tv) {
+		return Kerby.class.getSimpleName(); 
 	}
 
 }

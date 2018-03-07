@@ -30,8 +30,8 @@ public class KerbyPortImpl implements KerbyPortType {
 	}
 
 	@Override
-	public void dummy(SessionKeyView arg0, TicketView arg1) {
-		throw new IllegalStateException("not implemented");
+	public String dummy(SessionKeyView arg0, TicketView arg1) {
+		return this.endpointManager.getWsName() + " up-and-running";
 	}
 
 }
