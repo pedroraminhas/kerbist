@@ -3,6 +3,9 @@ package pt.ulisboa.tecnico.sdis.kerby;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement // to add element declaration to schema
 public class TicketView implements Serializable {
 
 	private static final long serialVersionUID = 1L;

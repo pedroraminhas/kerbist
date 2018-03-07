@@ -2,6 +2,9 @@ package pt.ulisboa.tecnico.sdis.kerby;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement // to add element declaration to schema
 public class SessionKeyAndTicketView implements Serializable {
 
 	private static final long serialVersionUID = 1L;

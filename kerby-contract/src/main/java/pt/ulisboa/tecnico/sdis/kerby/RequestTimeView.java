@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Miguel Pardal
  *
  */
-@XmlRootElement
+@XmlRootElement // to add element declaration to schema
 public class RequestTimeView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
