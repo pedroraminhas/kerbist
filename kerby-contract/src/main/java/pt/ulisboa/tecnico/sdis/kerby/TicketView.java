@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class TicketView implements Serializable {
 
@@ -8,8 +9,8 @@ public class TicketView implements Serializable {
 
 	private String x;
 	private String y;
-	private java.time.Instant time1;
-	private java.time.Instant time2;
+	private Date time1;
+	private Date time2;
 	private byte[] encodedKeyXY;
 
 	/**
@@ -45,7 +46,7 @@ public class TicketView implements Serializable {
 	/**
 	 * @return the time1
 	 */
-	public java.time.Instant getTime1() {
+	public Date getTime1() {
 		return time1;
 	}
 
@@ -53,14 +54,14 @@ public class TicketView implements Serializable {
 	 * @param time1
 	 *            the time1 to set
 	 */
-	public void setTime1(java.time.Instant time1) {
+	public void setTime1(Date time1) {
 		this.time1 = time1;
 	}
 
 	/**
 	 * @return the time2
 	 */
-	public java.time.Instant getTime2() {
+	public Date getTime2() {
 		return time2;
 	}
 
@@ -68,7 +69,7 @@ public class TicketView implements Serializable {
 	 * @param time2
 	 *            the time2 to set
 	 */
-	public void setTime2(java.time.Instant time2) {
+	public void setTime2(Date time2) {
 		this.time2 = time2;
 	}
 
