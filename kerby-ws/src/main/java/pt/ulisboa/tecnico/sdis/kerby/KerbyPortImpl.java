@@ -8,7 +8,13 @@ import javax.jws.WebService;
  * @author Miguel Pardal
  *
  */
-@WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.kerby.KerbyPortType")
+@WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.kerby.KerbyPortType",
+wsdlLocation = "KerbyService.wsdl",
+name ="KerbyService",
+portName = "KerbyPort",
+targetNamespace="http://kerby.sdis.tecnico.ulisboa.pt/",
+serviceName = "KerbyService"
+)
 public class KerbyPortImpl implements KerbyPortType {
 
 	// end point manager
@@ -19,10 +25,13 @@ public class KerbyPortImpl implements KerbyPortType {
 	}
 
 	@Override
-	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce) throws BadTicketRequest {
-		// TODO Auto-generated method stub
+	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce) throws BadTicketRequest_Exception {
 		return null;
 	}
 
+	@Override
+	public void dummy(SessionKeyView arg0, TicketView arg1) {
+		throw new IllegalStateException("not implemented");
+	}
 
 }
