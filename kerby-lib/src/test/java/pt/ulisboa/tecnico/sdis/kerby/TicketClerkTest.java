@@ -5,7 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.*;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.generateKey;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.recodeKey;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlToDate;
 
@@ -58,14 +59,14 @@ public class TicketClerkTest {
 
 	/** Create a test ticket with the specified times and key. */
 	private TicketView newTestTicket(Date t1, Date t2, Key key) throws NoSuchAlgorithmException {
-		TicketView ticket = clerk.newTicketView("C", "S", t1, t2, key);
+		TicketView ticket = clerk.ticketBuild("C", "S", t1, t2, key);
 		return ticket;
 	}
 
 	/** Create a test ticket with the specified times. */
 	private TicketView newTestTicket(Date t1, Date t2) throws NoSuchAlgorithmException {
 		final Key key = SecurityHelper.generateKey();
-		TicketView ticket = clerk.newTicketView("C", "S", t1, t2, key);
+		TicketView ticket = clerk.ticketBuild("C", "S", t1, t2, key);
 		return ticket;
 	}
 
@@ -103,10 +104,8 @@ public class TicketClerkTest {
 
 	@Test
 	public void testTicketToString() throws Exception {
-		System.out.println("Test ticket");
 		TicketView ticket = newTestTicket();
-		String string = clerk.ticketViewToString(ticket);
-		System.out.println(string);
+		String string = clerk.ticketToString(ticket);
 		assertNotNull(string);
 		assertTrue(string.trim().length() > 0);
 	}
@@ -122,47 +121,47 @@ public class TicketClerkTest {
 		// equals is not defined by JAX-B
 		assertFalse(ticket1.equals(ticket2));
 		// clerk equals is correct
-		assertTrue(clerk.ticketViewEquals(ticket1, ticket2));
+		assertTrue(clerk.ticketEquals(ticket1, ticket2));
 
 		// make a (small) difference
 		ticket1.setY(ticket2.getY() + "notTheSame");
 		// clerk equals should detect difference
-		assertFalse(clerk.ticketViewEquals(ticket1, ticket2));
+		assertFalse(clerk.ticketEquals(ticket1, ticket2));
 	}
 
 	@Test(expected = KerbyException.class)
 	public void testValidateTicketIncompleteX() throws Exception {
 		TicketView ticket = newTestTicket();
 		ticket.setX(null);
-		clerk.validateTicket(ticket);
+		clerk.ticketValidate(ticket);
 	}
 
 	@Test(expected = KerbyException.class)
 	public void testValidateTicketIncompleteY() throws Exception {
 		TicketView ticket = newTestTicket();
 		ticket.setY(null);
-		clerk.validateTicket(ticket);
+		clerk.ticketValidate(ticket);
 	}
 
 	@Test(expected = KerbyException.class)
 	public void testValidateTicketIncompleteTime1() throws Exception {
 		TicketView ticket = newTestTicket();
 		ticket.setTime1(null);
-		clerk.validateTicket(ticket);
+		clerk.ticketValidate(ticket);
 	}
 
 	@Test(expected = KerbyException.class)
 	public void testValidateTicketIncompleteTime2() throws Exception {
 		TicketView ticket = newTestTicket();
 		ticket.setTime2(null);
-		clerk.validateTicket(ticket);
+		clerk.ticketValidate(ticket);
 	}
 
 	@Test(expected = KerbyException.class)
 	public void testValidateTicketIncompleteKey() throws Exception {
 		TicketView ticket = newTestTicket();
 		ticket.setEncodedKeyXY(null);
-		clerk.validateTicket(ticket);
+		clerk.ticketValidate(ticket);
 	}
 
 	@Test(expected = KerbyException.class)
@@ -173,46 +172,36 @@ public class TicketClerkTest {
 		final Date beforeT1 = calendar.getTime();
 
 		ticket.setTime2(dateToXML(beforeT1));
-		clerk.validateTicket(ticket);
+		clerk.ticketValidate(ticket);
 	}
 
 	@Test
 	public void testMarshalTicket() throws Exception {
-		System.out.println("Test ticket");
 		TicketView ticket1 = newTestTicket();
-		System.out.println(clerk.ticketViewToString(ticket1));
 
 		// convert to XML
-		byte[] bytes = clerk.viewToXMLBytes(ticket1);
-		System.out.println(new String(bytes));
+		byte[] bytes = clerk.ticketToXMLBytes(ticket1);
 
 		// convert back to Java object
-		TicketView ticket2 = clerk.xmlBytesToView(bytes);
-
-		System.out.println("Test ticket recovered");
-		System.out.println(clerk.ticketViewToString(ticket2));
+		TicketView ticket2 = clerk.ticketFromXMLBytes(bytes);
 
 		// compare tickets
-		assertTrue(clerk.ticketViewEquals(ticket1, ticket2));
+		assertTrue(clerk.ticketEquals(ticket1, ticket2));
 	}
 
 	@Test
 	public void testSealTicket() throws Exception {
 		TicketView ticket = newTestTicket();
-		System.out.println("Ticket before seal");
-		System.out.println(clerk.ticketViewToString(ticket));
 
 		// seal ticket with server key
 		final Key serverKey = generateKey();
-		SealedView sealedTicket = clerk.seal(ticket, serverKey);
+		SealedView sealedTicket = clerk.ticketSeal(ticket, serverKey);
 
 		// decipher ticket with server key
-		TicketView decipheredTicket = clerk.unseal(sealedTicket, serverKey);
-		System.out.println("Ticket after seal");
-		System.out.println(clerk.ticketViewToString(decipheredTicket));
-		
+		TicketView decipheredTicket = clerk.ticketUnseal(sealedTicket, serverKey);
+
 		// compare tickets
-		assertTrue(clerk.ticketViewEquals(ticket, decipheredTicket));
+		assertTrue(clerk.ticketEquals(ticket, decipheredTicket));
 	}
 
 }

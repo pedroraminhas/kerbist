@@ -1,33 +1,24 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.*;
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.*;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.seal;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.unseal;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXML;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXMLBytes;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlBytesToView;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlNodeToView;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Date;
 
-import javax.crypto.Cipher;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
- * Class that handlers Kerberos tickets in different formats.
+ * Class that handles Kerberos tickets in different formats.
  * 
  * @author Miguel Pardal
  *
@@ -37,7 +28,7 @@ public class TicketClerk {
 	// ticket creation -------------------------------------------------------
 
 	/** Create TicketView from arguments. */
-	public TicketView newTicketView(String x, String y, Date time1, Date time2, Key key) {
+	public TicketView ticketBuild(String x, String y, Date time1, Date time2, Key key) {
 		TicketView ticket = new TicketView();
 		ticket.setX(x);
 		ticket.setY(y);
@@ -48,7 +39,7 @@ public class TicketClerk {
 	}
 
 	/** Create a textual representation of the TicketView. */
-	public String ticketViewToString(TicketView ticket) {
+	public String ticketToString(TicketView ticket) {
 		if (ticket == null)
 			return "null";
 
@@ -68,7 +59,7 @@ public class TicketClerk {
 	}
 
 	/** Compare contents of two tickets. */
-	public boolean ticketViewEquals(TicketView ticket1, TicketView ticket2) {
+	public boolean ticketEquals(TicketView ticket1, TicketView ticket2) {
 		if (ticket1 == ticket2)
 			return true;
 		if (ticket2 == null)
@@ -109,10 +100,9 @@ public class TicketClerk {
 	// ticket validation -----------------------------------------------------
 
 	/** Validate contents of TicketView. */
-	public void validateTicket(TicketView ticket) throws KerbyException {
+	public void ticketValidate(TicketView ticket) throws KerbyException {
 
 		// check nulls and empty strings
-
 		if (ticket == null)
 			throw new KerbyException("Null ticket!");
 
@@ -148,102 +138,38 @@ public class TicketClerk {
 
 	// ticket serialization --------------------------------------------------
 
-	/** Marshal i.e. convert view object to XML result provided by caller. */
-	public void viewToXMLResult(TicketView view, Result xmlResult) throws JAXBException {
-		// create a JAXBContext
-		JAXBContext jaxb = JAXBContext.newInstance(TicketView.class.getPackage().getName());
+	/**
+	 * Marshal ticket to XML document.
+	 */
+	public Node ticketToXMLNode(TicketView view) throws JAXBException {
+		return viewToXML(TicketView.class, view);
+	}
 
-		// create XML element (a complex type cannot be instantiated by itself)
-		JAXBElement<TicketView> jaxbElementMarshal = new JAXBElement<>(
-				new QName(TicketView.class.getSimpleName()),
-				TicketView.class, view);
-
-		// create a Marshaller and marshal
-		Marshaller m = jaxb.createMarshaller();
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // indent
-		m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE); // omit xml declaration
-		m.marshal(jaxbElementMarshal, xmlResult);
+	/** Marshal ticket to XML bytes. */
+	public byte[] ticketToXMLBytes(TicketView view) throws JAXBException {
+		return viewToXMLBytes(TicketView.class, view);
 	}
 
 	/**
-	 * Marshal view object to XML document (in-memory tree, following the Document
-	 * Object Model).
+	 * Unmarshal ticket from XML document.
 	 */
-	public Document viewToXMLDoc(TicketView view) throws JAXBException {
-		DOMResult domResult = new DOMResult();
-		viewToXMLResult(view, domResult);
-		return (Document) domResult.getNode();
-	}
-
-	/** Marshal view object to a byte array. */
-	public byte[] viewToXMLBytes(TicketView view) throws JAXBException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		StreamResult streamResult = new StreamResult(baos);
-		viewToXMLResult(view, streamResult);
-		return baos.toByteArray();
-	}
-
-	/** Unmarshal i.e. convert XML source provided by caller to a view object. */
-	public TicketView xmlSourceToView(Source xmlSource) throws JAXBException {
-		JAXBContext jaxb = JAXBContext.newInstance(TicketView.class);
-		Unmarshaller u = jaxb.createUnmarshaller();
-		// unmarshal, get element and cast to expected type
-		JAXBElement<TicketView> element = (JAXBElement<TicketView>) u.unmarshal(xmlSource, TicketView.class);
-		return element.getValue();
-	}
-
-	/**
-	 * Unmarshal XML document (in-memory tree, following the Document Object Model)
-	 * to a view object.
-	 */
-	public TicketView xmlDocToView(Document document) throws JAXBException {
-		DOMSource domSource = new DOMSource(document);
-		return xmlSourceToView(domSource);
+	public TicketView ticketFromXMLNode(Node xml) throws JAXBException {
+		return xmlNodeToView(TicketView.class, xml);
 	}
 
 	/** Unmarshal byte array to a view object. */
-	public TicketView xmlBytesToView(byte[] bytes) throws JAXBException {
-		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-		StreamSource streamSource = new StreamSource(bais);
-		return xmlSourceToView(streamSource);
+	public TicketView ticketFromXMLBytes(byte[] bytes) throws JAXBException {
+		return xmlBytesToView(TicketView.class, bytes);
 	}
 
 	// ticket sealing --------------------------------------------------------
 
-	public SealedView seal(TicketView view, Key key) throws KerbyException {
-		byte[] plainBytes = null;
-		try {
-			plainBytes = viewToXMLBytes(view);
-		} catch (Exception e) {
-			throw new KerbyException("Exception while serializing ticket!", e);
-		}
-
-		try {
-			Cipher cipher = initCipher(key);
-			byte[] cipherBytes = cipher.doFinal(plainBytes);
-
-			SealedView sealedView = new SealedView();
-			sealedView.setData(cipherBytes);
-			return sealedView;
-
-		} catch (Exception e) {
-			throw new KerbyException("Exception while sealing ticket!", e);
-		}
+	public SealedView ticketSeal(TicketView view, Key key) throws KerbyException {
+		return seal(TicketView.class, view, key);
 	}
 
-	public TicketView unseal(SealedView sealedView, Key key) throws KerbyException {
-		byte[] newPlainBytes = null;
-		try {
-			Cipher decipher = initDecipher(key);
-			newPlainBytes = decipher.doFinal(sealedView.getData());
-		} catch (Exception e) {
-			throw new KerbyException("Exception while deciphering ticket!", e);
-		}
-
-		try {
-			return xmlBytesToView(newPlainBytes);
-		} catch (Exception e) {
-			throw new KerbyException("Exception while deserializing ticket!", e);
-		}
+	public TicketView ticketUnseal(SealedView sealedView, Key key) throws KerbyException {
+		return unseal(TicketView.class, sealedView, key);
 	}
+
 }

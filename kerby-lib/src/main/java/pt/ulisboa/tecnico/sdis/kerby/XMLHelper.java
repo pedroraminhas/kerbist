@@ -1,17 +1,29 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,8 +49,8 @@ public class XMLHelper {
 		}
 	}
 
-	// Namespace utilities --------------------------------------------------- 
-	
+	// Namespace utilities ---------------------------------------------------
+
 	private static final String reversePackageName(final String packageName) {
 		if (packageName == null || packageName.length() == 0)
 			throw new IllegalArgumentException("Package name to reverse cannot be empty!");
@@ -56,8 +68,7 @@ public class XMLHelper {
 		String reverse = reversePackageName(packageName);
 		return "http://" + reverse + "/";
 	}
-	
-	
+
 	// DOM navigation --------------------------------------------------------
 
 	/**
@@ -102,6 +113,84 @@ public class XMLHelper {
 
 	public static Date xmlToDate(XMLGregorianCalendar xgc) {
 		return xgc.toGregorianCalendar().getTime();
+	}
+
+	// Generic view marshal --------------------------------------------------
+
+	/** Marshal i.e. convert view object to XML result provided by caller. */
+	public static <V> void viewToXMLResult(Class<V> viewClass, V view, Result xmlResult) throws JAXBException {
+		// create a JAXBContext
+		JAXBContext jaxb = JAXBContext.newInstance(viewClass.getPackage().getName());
+
+		// create XML element (a complex type cannot be instantiated by itself)
+		JAXBElement<V> jaxbElementMarshal = new JAXBElement<>(new QName(viewClass.getSimpleName()), viewClass, view);
+
+		// create a Marshaller and marshal
+		Marshaller m = jaxb.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // indent
+		m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE); // omit xml declaration
+		m.marshal(jaxbElementMarshal, xmlResult);
+	}
+
+	/**
+	 * Marshal view object to XML document (in-memory tree, following the Document
+	 * Object Model).
+	 */
+	public static <V> Document viewToXML(Class<V> viewClass, V view) throws JAXBException {
+		return (Document) viewToXMLNode(viewClass, view);
+	}
+
+	/**
+	 * Marshal view object to XML node (in-memory tree, following the Document
+	 * Object Model).
+	 */
+	public static <V> Node viewToXMLNode(Class<V> viewClass, V view) throws JAXBException {
+		DOMResult domResult = new DOMResult();
+		viewToXMLResult(viewClass, view, domResult);
+		return domResult.getNode();
+	}
+
+	/** Marshal view object to a byte array. */
+	public static <V> byte[] viewToXMLBytes(Class<V> viewClass, V view) throws JAXBException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		StreamResult streamResult = new StreamResult(baos);
+		viewToXMLResult(viewClass, view, streamResult);
+		return baos.toByteArray();
+	}
+
+	// Generic view unmarshal ------------------------------------------------
+
+	/** Unmarshal i.e. convert XML source provided by caller to a view object. */
+	public static <V> V xmlSourceToView(Class<V> viewClass, Source xmlSource) throws JAXBException {
+		JAXBContext jaxb = JAXBContext.newInstance(viewClass);
+		Unmarshaller u = jaxb.createUnmarshaller();
+		// unmarshal, get element and cast to expected type
+		JAXBElement<V> element = (JAXBElement<V>) u.unmarshal(xmlSource, viewClass);
+		return element.getValue();
+	}
+
+	/**
+	 * Unmarshal XML document (in-memory tree, following the Document Object Model)
+	 * to a view object.
+	 */
+	public static <V> V xmlToView(Class<V> viewClass, Document document) throws JAXBException {
+		return xmlNodeToView(viewClass, document);
+	}
+
+	/**
+	 * Unmarshal XML node (in-memory tree, following the Document Object Model) to a
+	 * view object.
+	 */
+	public static <V> V xmlNodeToView(Class<V> viewClass, Node node) throws JAXBException {
+		DOMSource domSource = new DOMSource(node);
+		return xmlSourceToView(viewClass, domSource);
+	}
+
+	/** Unmarshal byte array to a view object. */
+	public static <V> V xmlBytesToView(Class<V> viewClass, byte[] bytes) throws JAXBException {
+		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+		StreamSource streamSource = new StreamSource(bais);
+		return xmlSourceToView(viewClass, streamSource);
 	}
 
 }
