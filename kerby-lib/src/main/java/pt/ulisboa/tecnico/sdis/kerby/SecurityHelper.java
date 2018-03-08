@@ -75,7 +75,7 @@ public class SecurityHelper {
 			return sealedView;
 
 		} catch (Exception e) {
-			throw new KerbyException("Exception while sealing ticket!", e);
+			throw new KerbyException("Exception while sealing view!", e);
 		}
 	}
 
@@ -85,13 +85,13 @@ public class SecurityHelper {
 			Cipher decipher = initDecipher(key);
 			newPlainBytes = decipher.doFinal(sealedView.getData());
 		} catch (Exception e) {
-			throw new KerbyException("Exception while deciphering ticket!", e);
+			throw new KerbyException("Exception while deciphering view!", e);
 		}
 
 		try {
 			return xmlBytesToView(viewClass, newPlainBytes);
 		} catch (Exception e) {
-			throw new KerbyException("Exception while deserializing ticket!", e);
+			throw new KerbyException("Exception while deserializing view!", e);
 		}
 	}
 
