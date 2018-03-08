@@ -16,7 +16,7 @@ public class DummyIT extends BaseIT {
 
 	@Test
 	public void pingEmptyTest() {
-		assertNotNull(client.dummy(null, null));
+		assertNotNull(client.dummy());
 	}
 
 }

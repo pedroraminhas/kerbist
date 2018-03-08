@@ -34,7 +34,7 @@ public class KerbyClientApp {
 		// the actual tests are made using JUnit
 
 		System.out.println("Invoke dummy()...");
-		String result = client.dummy(null, null);
+		String result = client.dummy();
 		System.out.print("Result: ");
 		System.out.println(result);
 

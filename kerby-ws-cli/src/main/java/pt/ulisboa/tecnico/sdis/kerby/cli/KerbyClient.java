@@ -6,9 +6,12 @@ import java.util.Map;
 
 import javax.xml.ws.BindingProvider;
 
+import pt.ulisboa.tecnico.sdis.kerby.AuthView;
 import pt.ulisboa.tecnico.sdis.kerby.BadTicketRequest_Exception;
 import pt.ulisboa.tecnico.sdis.kerby.KerbyPortType;
 import pt.ulisboa.tecnico.sdis.kerby.KerbyService;
+import pt.ulisboa.tecnico.sdis.kerby.RequestTimeView;
+import pt.ulisboa.tecnico.sdis.kerby.SealedView;
 import pt.ulisboa.tecnico.sdis.kerby.SessionKeyAndTicketView;
 import pt.ulisboa.tecnico.sdis.kerby.SessionKeyView;
 import pt.ulisboa.tecnico.sdis.kerby.TicketView;
@@ -113,8 +116,12 @@ public class KerbyClient implements KerbyPortType {
 	}
 
 	@Override
-	public String dummy(SessionKeyView skv, TicketView tv) {
-		return port.dummy(skv, tv);
+	public String dummy(AuthView arg0, RequestTimeView arg1, SealedView arg2, SessionKeyView arg3, TicketView arg4) {
+		return port.dummy(arg0, arg1, arg2, arg3, arg4);
+	}
+
+	public String dummy() {
+		return port.dummy(null, null, null, null, null);
 	}
 
 }
