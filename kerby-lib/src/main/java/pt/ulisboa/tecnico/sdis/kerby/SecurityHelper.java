@@ -11,6 +11,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.namespace.QName;
 
 public class SecurityHelper {
 
@@ -58,7 +59,9 @@ public class SecurityHelper {
 	public static <V> SealedView seal(Class<V> viewClass, V view, Key key) throws KerbyException {
 		byte[] plainBytes = null;
 		try {
-			plainBytes = viewToXMLBytes(viewClass, view);
+			// Use the type name without package as the XML tag name for the data.
+			QName tagName = new QName(viewClass.getSimpleName());
+			plainBytes = viewToXMLBytes(viewClass, view, tagName);
 		} catch (Exception e) {
 			throw new KerbyException("Exception while serializing view!", e);
 		}

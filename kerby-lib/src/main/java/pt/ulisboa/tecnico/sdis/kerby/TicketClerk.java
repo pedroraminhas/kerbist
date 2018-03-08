@@ -14,6 +14,7 @@ import java.util.Date;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 import org.w3c.dom.Node;
 
@@ -141,13 +142,13 @@ public class TicketClerk {
 	/**
 	 * Marshal ticket to XML document.
 	 */
-	public Node ticketToXMLNode(TicketView view) throws JAXBException {
-		return viewToXML(TicketView.class, view);
+	public Node ticketToXMLNode(TicketView view, String ticketTagName) throws JAXBException {
+		return viewToXML(TicketView.class, view, new QName(ticketTagName));
 	}
 
 	/** Marshal ticket to XML bytes. */
-	public byte[] ticketToXMLBytes(TicketView view) throws JAXBException {
-		return viewToXMLBytes(TicketView.class, view);
+	public byte[] ticketToXMLBytes(TicketView view, String ticketTagName) throws JAXBException {
+		return viewToXMLBytes(TicketView.class, view, new QName(ticketTagName));
 	}
 
 	/**

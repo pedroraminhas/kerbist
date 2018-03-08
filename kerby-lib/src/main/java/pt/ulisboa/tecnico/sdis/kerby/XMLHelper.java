@@ -117,13 +117,14 @@ public class XMLHelper {
 
 	// Generic view marshal --------------------------------------------------
 
-	/** Marshal i.e. convert view object to XML result provided by caller. */
-	public static <V> void viewToXMLResult(Class<V> viewClass, V view, Result xmlResult) throws JAXBException {
+	/** Marshal i.e. convert view object to XML result with tag name. */
+	public static <V> void viewToXMLResult(Class<V> viewClass, V view, Result xmlResult, QName tagName)
+			throws JAXBException {
 		// create a JAXBContext
 		JAXBContext jaxb = JAXBContext.newInstance(viewClass.getPackage().getName());
 
 		// create XML element (a complex type cannot be instantiated by itself)
-		JAXBElement<V> jaxbElementMarshal = new JAXBElement<>(new QName(viewClass.getSimpleName()), viewClass, view);
+		JAXBElement<V> jaxbElementMarshal = new JAXBElement<>(tagName, viewClass, view);
 
 		// create a Marshaller and marshal
 		Marshaller m = jaxb.createMarshaller();
@@ -133,28 +134,28 @@ public class XMLHelper {
 	}
 
 	/**
-	 * Marshal view object to XML document (in-memory tree, following the Document
-	 * Object Model).
+	 * Marshal view object to XML document with tag name (in-memory tree, following
+	 * the Document Object Model).
 	 */
-	public static <V> Document viewToXML(Class<V> viewClass, V view) throws JAXBException {
-		return (Document) viewToXMLNode(viewClass, view);
+	public static <V> Document viewToXML(Class<V> viewClass, V view, QName tagName) throws JAXBException {
+		return (Document) viewToXMLNode(viewClass, view, tagName);
 	}
 
 	/**
-	 * Marshal view object to XML node (in-memory tree, following the Document
-	 * Object Model).
+	 * Marshal view object to XML node with tag name (in-memory tree, following the
+	 * Document Object Model).
 	 */
-	public static <V> Node viewToXMLNode(Class<V> viewClass, V view) throws JAXBException {
+	public static <V> Node viewToXMLNode(Class<V> viewClass, V view, QName tagName) throws JAXBException {
 		DOMResult domResult = new DOMResult();
-		viewToXMLResult(viewClass, view, domResult);
+		viewToXMLResult(viewClass, view, domResult, tagName);
 		return domResult.getNode();
 	}
 
-	/** Marshal view object to a byte array. */
-	public static <V> byte[] viewToXMLBytes(Class<V> viewClass, V view) throws JAXBException {
+	/** Marshal view object to a byte array of XML with a tag name. */
+	public static <V> byte[] viewToXMLBytes(Class<V> viewClass, V view, QName tagName) throws JAXBException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		StreamResult streamResult = new StreamResult(baos);
-		viewToXMLResult(viewClass, view, streamResult);
+		viewToXMLResult(viewClass, view, streamResult, tagName);
 		return baos.toByteArray();
 	}
 

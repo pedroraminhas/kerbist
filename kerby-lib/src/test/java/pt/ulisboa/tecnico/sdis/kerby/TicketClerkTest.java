@@ -180,7 +180,7 @@ public class TicketClerkTest {
 		TicketView ticket1 = newTestTicket();
 
 		// convert to XML
-		byte[] bytes = clerk.ticketToXMLBytes(ticket1);
+		byte[] bytes = clerk.ticketToXMLBytes(ticket1, "testTicket");
 
 		// convert back to Java object
 		TicketView ticket2 = clerk.ticketFromXMLBytes(bytes);
@@ -196,7 +196,7 @@ public class TicketClerkTest {
 		// seal ticket with server key
 		final Key serverKey = generateKey();
 		SealedView sealedTicket = clerk.ticketSeal(ticket, serverKey);
-
+		
 		// decipher ticket with server key
 		TicketView decipheredTicket = clerk.ticketUnseal(sealedTicket, serverKey);
 
