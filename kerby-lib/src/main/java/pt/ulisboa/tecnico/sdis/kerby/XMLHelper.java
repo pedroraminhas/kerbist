@@ -37,6 +37,27 @@ public class XMLHelper {
 		}
 	}
 
+	// Namespace utilities --------------------------------------------------- 
+	
+	private static final String reversePackageName(final String packageName) {
+		if (packageName == null || packageName.length() == 0)
+			throw new IllegalArgumentException("Package name to reverse cannot be empty!");
+		String[] part = packageName.split("\\.");
+		StringBuilder builder = new StringBuilder();
+		for (int i = part.length - 1; i > 0; i--) {
+			builder.append(part[i]);
+			if (i != 1)
+				builder.append(".");
+		}
+		return builder.toString();
+	}
+
+	public static String xmlNamespaceFromJavaPackage(final String packageName) {
+		String reverse = reversePackageName(packageName);
+		return "http://" + reverse + "/";
+	}
+	
+	
 	// DOM navigation --------------------------------------------------------
 
 	/**

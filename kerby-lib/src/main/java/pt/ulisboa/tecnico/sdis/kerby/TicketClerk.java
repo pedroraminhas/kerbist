@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
+import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.*;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
@@ -149,23 +151,18 @@ public class TicketClerk {
 	/** Marshal i.e. convert view object to XML result provided by caller. */
 	public void viewToXMLResult(TicketView view, Result xmlResult) throws JAXBException {
 		// create a JAXBContext
-		// JAXBContext jc = JAXBContext.newInstance("pt.ulisboa.tecnico.sdis.kerby");
-		JAXBContext jabx = JAXBContext.newInstance(TicketView.class);
+		JAXBContext jaxb = JAXBContext.newInstance(TicketView.class.getPackage().getName());
 
 		// create XML element (a complex type cannot be instantiated by itself)
-		// JAXBElement<TicketView> jaxbElementMarshal = new JAXBElement<>(
-		// new QName("http://kerby.sdis.tecnico.ulisboa.pt/", "ticket", "k"),
-		// pt.ulisboa.tecnico.sdis.kerby.TicketView.class, ticket);
+		JAXBElement<TicketView> jaxbElementMarshal = new JAXBElement<>(
+				new QName(TicketView.class.getSimpleName()),
+				TicketView.class, view);
 
 		// create a Marshaller and marshal
-		Marshaller m = jabx.createMarshaller();
+		Marshaller m = jaxb.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // indent
 		m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE); // omit xml declaration
-		// m.marshal(jaxbElementMarshal, System.out);
-
-		// JAXBContext jc = JAXBContext.newInstance(obj.getClass());
-		// jabx.createMarshaller().marshal(view, xmlResult);
-		m.marshal(view, xmlResult);
+		m.marshal(jaxbElementMarshal, xmlResult);
 	}
 
 	/**
@@ -222,35 +219,29 @@ public class TicketClerk {
 		}
 
 		try {
-			// TODO extract cipher to constant
-			Cipher cipher = Cipher.getInstance("AES");
-			cipher.init(Cipher.ENCRYPT_MODE, key);
+			Cipher cipher = initCipher(key);
 			byte[] cipherBytes = cipher.doFinal(plainBytes);
 
 			SealedView sealedView = new SealedView();
-			sealedView.setCipheredView(cipherBytes);
+			sealedView.setData(cipherBytes);
 			return sealedView;
 
 		} catch (Exception e) {
-			throw new KerbyException("Exception while ciphering ticket!", e);
+			throw new KerbyException("Exception while sealing ticket!", e);
 		}
 	}
 
 	public TicketView unseal(SealedView sealedView, Key key) throws KerbyException {
 		byte[] newPlainBytes = null;
 		try {
-			Cipher cipher = Cipher.getInstance("AES");
-			cipher.init(Cipher.DECRYPT_MODE, key);
-
-			newPlainBytes = cipher.doFinal(sealedView.getCipheredView());
+			Cipher decipher = initDecipher(key);
+			newPlainBytes = decipher.doFinal(sealedView.getData());
 		} catch (Exception e) {
 			throw new KerbyException("Exception while deciphering ticket!", e);
 		}
 
 		try {
 			return xmlBytesToView(newPlainBytes);
-			// } catch (KerbyException e) {
-			// throw e;
 		} catch (Exception e) {
 			throw new KerbyException("Exception while deserializing ticket!", e);
 		}

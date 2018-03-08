@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.recodeKey;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.*;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlToDate;
 
@@ -176,35 +176,43 @@ public class TicketClerkTest {
 		clerk.validateTicket(ticket);
 	}
 
-	// @Test
-	// public void testMarshalTicket() throws Exception {
-	// System.out.println("Test ticket");
-	// TicketView ticket = newTestTicket();
-	// System.out.println(clerk.ticketViewToString(ticket));
-	//
-	// // convert to XML
-	// byte[] bytes = clerk.viewToXMLBytes(ticket);
-	//
-	// // convert back to Java object
-	// TicketView ticket2 = clerk.xmlBytesToView(bytes);
-	//
-	// // compare tickets
-	// assertEquals(/* expected */ ticket, /* actual */ ticket2);
-	// }
+	@Test
+	public void testMarshalTicket() throws Exception {
+		System.out.println("Test ticket");
+		TicketView ticket1 = newTestTicket();
+		System.out.println(clerk.ticketViewToString(ticket1));
 
-	// @Test
-	// public void testSealTicket() throws Exception {
-	// TicketView ticket = newTestTicket();
-	//
-	// // seal ticket with server key
-	// final Key serverKey = generateKey("AES", 128);
-	// SealedView sealedTicket = clerk.seal(ticket, serverKey);
-	//
-	// // decipher ticket with server key
-	// TicketView decipheredTicket = clerk.unseal(sealedTicket, serverKey);
-	//
-	// // compare that obtained ticket is equal to original ticket
-	// assertEquals(/*expected*/ ticket, /*actual*/ decipheredTicket);
-	// }
+		// convert to XML
+		byte[] bytes = clerk.viewToXMLBytes(ticket1);
+		System.out.println(new String(bytes));
+
+		// convert back to Java object
+		TicketView ticket2 = clerk.xmlBytesToView(bytes);
+
+		System.out.println("Test ticket recovered");
+		System.out.println(clerk.ticketViewToString(ticket2));
+
+		// compare tickets
+		assertTrue(clerk.ticketViewEquals(ticket1, ticket2));
+	}
+
+	@Test
+	public void testSealTicket() throws Exception {
+		TicketView ticket = newTestTicket();
+		System.out.println("Ticket before seal");
+		System.out.println(clerk.ticketViewToString(ticket));
+
+		// seal ticket with server key
+		final Key serverKey = generateKey();
+		SealedView sealedTicket = clerk.seal(ticket, serverKey);
+
+		// decipher ticket with server key
+		TicketView decipheredTicket = clerk.unseal(sealedTicket, serverKey);
+		System.out.println("Ticket after seal");
+		System.out.println(clerk.ticketViewToString(decipheredTicket));
+		
+		// compare tickets
+		assertTrue(clerk.ticketViewEquals(ticket, decipheredTicket));
+	}
 
 }
