@@ -1,12 +1,11 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement // to add element declaration to schema
+@XmlType(propOrder = { "x", "y", "time1", "time2", "encodedKeyXY" })
 public class TicketView implements Serializable {
 
 	private static final long serialVersionUID = 1L;

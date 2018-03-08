@@ -20,6 +20,6 @@ public interface KerbyPortType {
 			@WebParam(name = "server") String server, @WebParam(name = "nounce") long nounce) throws BadTicketRequest;
 
 	/** dummy operation to force schema generation of all views. */
-	public String dummy(SessionKeyView skv, TicketView tv);
+	public String dummy(AuthView av, RequestTimeView rtv, SealedView sv, SessionKeyView skv, TicketView tv);
 
 }

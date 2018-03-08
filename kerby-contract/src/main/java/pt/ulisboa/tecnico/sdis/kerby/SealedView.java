@@ -2,21 +2,18 @@ package pt.ulisboa.tecnico.sdis.kerby;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement // to add element declaration to schema
 public class SealedView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private byte[] cipheredView;
+	private byte[] data;
 
-	public byte[] getCipheredView() {
-		return cipheredView;
+	public byte[] getData() {
+		return data;
 	}
 
-	public void setCipheredView(byte[] cipheredView) {
-		this.cipheredView = cipheredView;
+	public void setData(byte[] cipheredView) {
+		this.data = cipheredView;
 	}
 
 }

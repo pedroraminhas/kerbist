@@ -3,7 +3,7 @@ package pt.ulisboa.tecnico.sdis.kerby;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Class that represents a Kerberos authenticator.
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Miguel Pardal
  *
  */
-@XmlRootElement // to add element declaration to schema
+@XmlType(propOrder = { "x", "timeRequest" })
 public class AuthView implements Serializable {
 
 	private static final long serialVersionUID = 1L;

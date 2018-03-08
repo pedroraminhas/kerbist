@@ -2,9 +2,9 @@ package pt.ulisboa.tecnico.sdis.kerby;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement // to add element declaration to schema
+@XmlType(propOrder = { "encodedKeyXY", "nounce" })
 public class SessionKeyView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
