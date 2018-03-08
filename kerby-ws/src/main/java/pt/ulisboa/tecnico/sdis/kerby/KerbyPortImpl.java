@@ -30,7 +30,7 @@ public class KerbyPortImpl implements KerbyPortType {
 	}
 
 	@Override
-	public String dummy(SessionKeyView arg0, TicketView arg1) {
+	public String dummy(AuthView arg0, RequestTimeView arg1, SealedView arg2, SessionKeyView arg3, TicketView arg4) {
 		return this.endpointManager.getWsName() + " up-and-running";
 	}
 
