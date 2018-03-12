@@ -24,7 +24,7 @@ import org.w3c.dom.Node;
  * @author Miguel Amaral
  *
  */
-public class RequestTIme {
+public class RequestTime {
 
 	/** RequestTime data container. After creation, cannot be null. */
 	private RequestTimeView view;
@@ -46,7 +46,7 @@ public class RequestTIme {
 	//}
 	
 	/** Create RequestTime from data view. */
-	public RequestTIme(RequestTimeView view) {
+	public RequestTime(RequestTimeView view) {
 		setView(view);
 	}
 
@@ -106,7 +106,7 @@ public class RequestTIme {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RequestTIme other = (RequestTIme) obj;
+		RequestTime other = (RequestTime) obj;
 		RequestTimeView otherView = other.getView();
 
 		return RequestTimeViewEquals(view, otherView);
