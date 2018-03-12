@@ -64,13 +64,13 @@ public class KerbyManager {
 			SealedView sealedTicket = ticket.seal(serverKey);
 			
 			/* Create and Seal the Session Key */
-			//SessionKey sessionKey = new SessionKey(clientServerKey, nounce);
-			//SealedView sealedSessionKey = sessionKey.seal(clientKey);
+			SessionKey sessionKey = new SessionKey(clientServerKey, nounce);
+			SealedView sealedSessionKey = sessionKey.seal(clientKey);
 			
 			/* Create SessionKeyAndTicketView */
 			SessionKeyAndTicketView response = new SessionKeyAndTicketView();
 			response.setTicket(sealedTicket);
-			//response.setSessionKey(sealedSessionKey);
+			response.setSessionKey(sealedSessionKey);
 			
 			/* Store Nounce */
 			previousNounces.add(nounce);

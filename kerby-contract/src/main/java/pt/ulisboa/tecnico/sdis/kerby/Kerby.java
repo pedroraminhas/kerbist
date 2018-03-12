@@ -12,7 +12,7 @@ import javax.jws.WebService;
 public class Kerby implements KerbyPortType {
 
 	@Override
-	public SessionKeyAndTicketView requestTicket(String client, String server, long nonce, int ticketDuration) throws BadTicketRequest {
+	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce, int ticketDuration) throws BadTicketRequest {
 		return null;
 	}
 

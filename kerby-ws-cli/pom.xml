@@ -19,7 +19,7 @@
 
 		<wsdl.dir>${basedir}/../kerby-contract/target/generated-sources/wsdl</wsdl.dir>
 
-		<mainclass>org.binas.station.ws.cli.KerbyClientApp</mainclass>
+		<mainclass>pt.ulisboa.tecnico.sdis.kerby.cli.KerbyClientApp</mainclass>
 
 		<uddi.url>http://localhost:9090</uddi.url>
 		<ws.name>kerby</ws.name>
