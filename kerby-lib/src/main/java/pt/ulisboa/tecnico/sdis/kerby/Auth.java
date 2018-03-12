@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
  */
 public class Auth {
 
-	/** Ticket data container. After creation, cannot be null. */
+	/** auth data container. After creation, cannot be null. */
 	private AuthView view;
 
 	// Auth creation -------------------------------------------------------
@@ -47,7 +47,7 @@ public class Auth {
 	//	setView(view);
 	//}
 	
-	/** Create ticket from data view. */
+	/** Create auth from data view. */
 	public Auth(AuthView view) {
 		setView(view);
 	}
@@ -146,14 +146,14 @@ public class Auth {
 		return true;
 	}
 
-	// ticket validation -----------------------------------------------------
+	// auth validation -----------------------------------------------------
 
-	/** Validate contents of TicketView. */
+	/** Validate contents of AuthView. */
 	public void validate() throws KerbyException {
 
 		// check nulls and empty strings
 		if (view == null)
-			throw new KerbyException("Null ticket!");
+			throw new KerbyException("Null auth!");
 
 		final String x = view.getX();
 		if (x == null || x.trim().length() == 0)
@@ -167,19 +167,19 @@ public class Auth {
 	// XML serialization -----------------------------------------------------
 
 	/**
-	 * Marshal ticket to XML document.
+	 * Marshal auth to XML document.
 	 */
-	public Node toXMLNode(String ticketTagName) throws JAXBException {
-		return viewToXML(AuthView.class, view, new QName(ticketTagName));
+	public Node toXMLNode(String authTagName) throws JAXBException {
+		return viewToXML(AuthView.class, view, new QName(authTagName));
 	}
 
-	/** Marshal ticket to XML bytes. */
-	public byte[] toXMLBytes(String ticketTagName) throws JAXBException {
-		return viewToXMLBytes(AuthView.class, view, new QName(ticketTagName));
+	/** Marshal auth to XML bytes. */
+	public byte[] toXMLBytes(String authTagName) throws JAXBException {
+		return viewToXMLBytes(AuthView.class, view, new QName(authTagName));
 	}
 
 	/**
-	 * Unmarshal ticket from XML document.
+	 * Unmarshal auth from XML document.
 	 */
 	public void fromXMLNode(Node xml) throws JAXBException {
 		AuthView view= xmlNodeToView(AuthView.class, xml);

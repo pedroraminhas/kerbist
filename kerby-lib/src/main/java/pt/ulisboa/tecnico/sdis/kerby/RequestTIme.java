@@ -26,16 +26,16 @@ import org.w3c.dom.Node;
  */
 public class RequestTIme {
 
-	/** Ticket data container. After creation, cannot be null. */
+	/** RequestTime data container. After creation, cannot be null. */
 	private RequestTimeView view;
 
 	// RequestTimeView creation -------------------------------------------------------
 
 	/** Create RequestTimeView from arguments. */
-	public RequestTimeView authBuild(Date timeRequest) {
-		RequestTimeView auth= new RequestTimeView();
-		auth.setTimeRequest(dateToXML(timeRequest));
-		return auth;
+	public RequestTimeView requestTimeBuild(Date timeRequest) {
+		RequestTimeView requestTimeView = new RequestTimeView();
+		requestTimeView.setTimeRequest(dateToXML(timeRequest));
+		return requestTimeView;
 	}
 	
 	/** Create a default view */
@@ -45,7 +45,7 @@ public class RequestTIme {
 	//	setView(view);
 	//}
 	
-	/** Create ticket from data view. */
+	/** Create RequestTime from data view. */
 	public RequestTIme(RequestTimeView view) {
 		setView(view);
 	}
@@ -78,7 +78,7 @@ public class RequestTIme {
 	// object methods --------------------------------------------------------
 
 	/** Create a textual representation of the RequestTimeView. */
-	public String authToString() {
+	public String requestTimeToString() {
 		if (view == null) {
 			return "null";
 		}
@@ -128,14 +128,14 @@ public class RequestTIme {
 		return true;
 	}
 
-	// ticket validation -----------------------------------------------------
+	// RequestTime validation -----------------------------------------------------
 
-	/** Validate contents of TicketView. */
+	/** Validate contents of RequestTimeView. */
 	public void validate() throws KerbyException {
 
 		// check nulls and empty strings
 		if (view == null)
-			throw new KerbyException("Null ticket!");
+			throw new KerbyException("Null RequestTime!");
 
 		final XMLGregorianCalendar xgc1 = view.getTimeRequest();
 		if (xgc1 == null)
@@ -145,19 +145,19 @@ public class RequestTIme {
 	// XML serialization -----------------------------------------------------
 
 	/**
-	 * Marshal ticket to XML document.
+	 * Marshal RequestTime to XML document.
 	 */
-	public Node toXMLNode(String ticketTagName) throws JAXBException {
-		return viewToXML(RequestTimeView.class, view, new QName(ticketTagName));
+	public Node toXMLNode(String requestTimeTagName) throws JAXBException {
+		return viewToXML(RequestTimeView.class, view, new QName(requestTimeTagName));
 	}
 
-	/** Marshal ticket to XML bytes. */
-	public byte[] toXMLBytes(String ticketTagName) throws JAXBException {
-		return viewToXMLBytes(RequestTimeView.class, view, new QName(ticketTagName));
+	/** Marshal requestTime to XML bytes. */
+	public byte[] toXMLBytes(String requestTimeTagName) throws JAXBException {
+		return viewToXMLBytes(RequestTimeView.class, view, new QName(requestTimeTagName));
 	}
 
 	/**
-	 * Unmarshal ticket from XML document.
+	 * Unmarshal requestTime from XML document.
 	 */
 	public void fromXMLNode(Node xml) throws JAXBException {
 		RequestTimeView view= xmlNodeToView(RequestTimeView.class, xml);
