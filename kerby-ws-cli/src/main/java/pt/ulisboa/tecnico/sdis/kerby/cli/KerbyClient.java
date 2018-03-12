@@ -110,9 +110,9 @@ public class KerbyClient implements KerbyPortType {
 	// remote invocation methods ----------------------------------------------
 
 	@Override
-	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce)
+	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce, int ticketDuration)
 			throws BadTicketRequest_Exception {
-		return port.requestTicket(client, server, nounce);
+		return port.requestTicket(client, server, nounce, ticketDuration);
 	}
 
 	@Override

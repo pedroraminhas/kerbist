@@ -17,7 +17,8 @@ public interface KerbyPortType {
 	 * server id and a nounce. And receives sealed session key and ticket.
 	 */
 	public SessionKeyAndTicketView requestTicket(@WebParam(name = "client") String client,
-			@WebParam(name = "server") String server, @WebParam(name = "nounce") long nounce) throws BadTicketRequest;
+			@WebParam(name = "server") String server, @WebParam(name = "nounce") long nounce,
+			@WebParam(name = "ticketDuration") int ticketDuration) throws BadTicketRequest;
 
 	/** dummy operation to force schema generation of all views. */
 	public String dummy(AuthView av, RequestTimeView rtv, SealedView sv, SessionKeyView skv, TicketView tv);

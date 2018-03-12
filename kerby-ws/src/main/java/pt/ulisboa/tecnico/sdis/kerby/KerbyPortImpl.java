@@ -1,5 +1,10 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.jws.WebService;
 
 /**
@@ -25,13 +30,32 @@ public class KerbyPortImpl implements KerbyPortType {
 	}
 
 	@Override
-	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce) throws BadTicketRequest_Exception {
-		return null;
+	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce, int ticketDuration) 
+			throws BadTicketRequest_Exception {
+		SessionKeyAndTicketView result = new SessionKeyAndTicketView();
+		KerbyManager manager = KerbyManager.getInstance();
+		
+		try {
+			result = manager.requestTicket(client, server, nounce, ticketDuration);
+		} catch (BadTicketRequestException e) {
+			throwBadTicketRequest(e.getMessage());
+		}
+		
+		return result;
 	}
 
 	@Override
 	public String dummy(AuthView arg0, RequestTimeView arg1, SealedView arg2, SessionKeyView arg3, TicketView arg4) {
 		return this.endpointManager.getWsName() + " up-and-running";
+	}
+	
+	// Exception helper -----------------------------------------------------
+	
+	private void throwBadTicketRequest(final String message) 
+			throws BadTicketRequest_Exception {
+		BadTicketRequest faultInfo = new BadTicketRequest();
+		faultInfo.setMessage(message);
+		throw new BadTicketRequest_Exception(message, faultInfo);
 	}
 
 }

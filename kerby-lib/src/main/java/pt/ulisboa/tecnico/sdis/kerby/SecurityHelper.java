@@ -6,10 +6,14 @@ import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlBytesToView;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 
@@ -17,6 +21,9 @@ public class SecurityHelper {
 
 	public static final String CIPHER_ALGO = "AES";
 	public static final int CIPHER_KEY_SIZE = 128;
+	
+	public static final String KDF_ALGORITHM = "PBKDF2WithHmacSHA256";
+	public static final int KDF_ITERATIONS = 16000;
 
 	// keys ------------------------------------------------------------------
 
@@ -30,6 +37,19 @@ public class SecurityHelper {
 		Key key = keyGen.generateKey();
 		return key;
 	}
+	
+	/** Generates a Key from a Password and a Salt using a Key Derivation Function */
+	public static Key generateKeyFromPassword(String password, String salt) 
+			throws NoSuchAlgorithmException, InvalidKeySpecException {
+		char[] passwordCharArray = password.toCharArray();
+		byte[] saltByteArray = salt.getBytes(); 
+		PBEKeySpec spec = new PBEKeySpec(passwordCharArray, saltByteArray, KDF_ITERATIONS, CIPHER_KEY_SIZE);
+		SecretKeyFactory skf = SecretKeyFactory.getInstance(KDF_ALGORITHM);
+		SecretKey tmp = skf.generateSecret(spec);
+		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), CIPHER_ALGO);
+        return secret;
+	}
+	
 
 	public static Key recodeKey(byte[] encodedKey) {
 		return new SecretKeySpec(encodedKey, CIPHER_ALGO);
