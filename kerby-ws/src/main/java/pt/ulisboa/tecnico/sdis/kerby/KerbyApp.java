@@ -25,7 +25,7 @@ public class KerbyApp {
 		if (args.length == 1) {
 			wsURL = args[0];
 			endpoint = new KerbyEndpointManager(wsURL);
-			// Station.getInstance().setId(wsURL);
+			// KerbyManage.getInstance().loadPassword(file);
 
 		} else if (args.length >= 3) {
 			uddiURL = args[0];

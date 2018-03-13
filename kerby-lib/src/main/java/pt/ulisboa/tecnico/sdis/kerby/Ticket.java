@@ -46,11 +46,16 @@ public class Ticket {
 	// TODO create constructor without times (defaults e.g. now and now+60sec are
 	// created)
 
-	// TODO create constructor withou key and times
+	// TODO create constructor without key and times
 
 	/** Create ticket from data view. */
 	public Ticket(TicketView view) {
 		setView(view);
+	}
+
+	/** Create ticket from data view. */
+	public Ticket(CipheredView cipheredView, Key key) throws KerbyException {
+		decipher(cipheredView, key);
 	}
 
 	// After construction, view can never be null, and can never be set to null.
@@ -273,11 +278,15 @@ public class Ticket {
 
 	// sealing ---------------------------------------------------------------
 
-	public SealedView seal(Key key) throws KerbyException {
+	public CipheredView cipher(Key key) throws KerbyException {
 		return SecurityHelper.seal(TicketView.class, view, key);
 	}
 
-	public void unseal(SealedView sealedView, Key key) throws KerbyException {
+	/**
+	 * Decipher is private because it should only be called by constructor when
+	 * receiving a CipheredView of the ticket.
+	 */
+	private void decipher(SealedView sealedView, Key key) throws KerbyException {
 		TicketView view = SecurityHelper.unseal(TicketView.class, sealedView, key);
 		// set view should not allow null
 		setView(view);

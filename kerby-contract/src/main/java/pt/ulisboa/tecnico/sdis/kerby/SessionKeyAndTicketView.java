@@ -9,22 +9,22 @@ public class SessionKeyAndTicketView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private SealedView sessionKey;
-	private SealedView ticket;
+	private CipheredView sessionKey;
+	private CipheredView ticket;
 
-	public SealedView getSessionKey() {
+	public CipheredView getSessionKey() {
 		return sessionKey;
 	}
 
-	public void setSessionKey(SealedView sessionKey) {
+	public void setSessionKey(CipheredView sessionKey) {
 		this.sessionKey = sessionKey;
 	}
 
-	public SealedView getTicket() {
+	public CipheredView getTicket() {
 		return ticket;
 	}
 
-	public void setTicket(SealedView ticket) {
+	public void setTicket(CipheredView ticket) {
 		this.ticket = ticket;
 	}
 

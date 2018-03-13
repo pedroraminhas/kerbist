@@ -21,6 +21,6 @@ public interface KerbyPortType {
 			@WebParam(name = "ticketDuration") int ticketDuration) throws BadTicketRequest;
 
 	/** dummy operation to force schema generation of all views. */
-	public String dummy(AuthView av, RequestTimeView rtv, SealedView sv, SessionKeyView skv, TicketView tv);
+	public String dummy(AuthView av, RequestTimeView rtv, CipheredView sv, SessionKeyView skv, TicketView tv);
 
 }

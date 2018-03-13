@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class XMLHelper {
+class XMLHelper {
 
 	private static final DatatypeFactory DATATYPE_FACTORY;
 	private static final TransformerFactory TRANSFORMER_FACTORY;
