@@ -16,7 +16,7 @@ public class KerbyManager {
 	
 	private static final int MIN_TICKET_DURATION = 10;
 	private static final int MAX_TICKET_DURATION = 300;
-	private static Set<Long> previousNounces = Collections.synchronizedSet(new HashSet<Long>());
+	private static Set<UserNouncePair> previousNounces = Collections.synchronizedSet(new HashSet<UserNouncePair>());
 	private static ConcurrentHashMap<String, Key> knownKeys = new ConcurrentHashMap<String, Key>();
 	private static String salt;
 	
@@ -50,7 +50,9 @@ public class KerbyManager {
 			throw new BadTicketRequestException("Unknown Server.");
 		if(ticketDuration < MIN_TICKET_DURATION || ticketDuration > MAX_TICKET_DURATION)
 			throw new BadTicketRequestException("Invalid Ticked Duration.");
-		if(previousNounces.contains(nounce))
+		
+		UserNouncePair userNounce = new UserNouncePair(client, nounce);
+		if(previousNounces.contains(userNounce))
 			throw new BadTicketRequestException("Repeated Nounce, possible Replay Attack.");
 		
 		
@@ -75,8 +77,8 @@ public class KerbyManager {
 			response.setTicket(cipheredTicket);
 			response.setSessionKey(cipheredSessionKey);
 			
-			/* Store Nounce */
-			previousNounces.add(nounce);
+			/* Store UserNouncePair */
+			previousNounces.add(userNounce);
 			
 			return response;
 			
