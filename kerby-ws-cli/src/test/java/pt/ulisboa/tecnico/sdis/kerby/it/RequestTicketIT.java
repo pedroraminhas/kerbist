@@ -28,14 +28,18 @@ import org.junit.Test;
 public class RequestTicketIT extends BaseIT {
 	
 	private static SecureRandom randomGenerator = new SecureRandom();
-	private static final String VALID_CLIENT_NAME = "kerbyclient1";
-	private static final String VALID_CLIENT_PASSWORD = "password1";
-	private static final String VALID_SERVER_NAME = "kerbyserver1";
-	private static final String VALID_SERVER_PASSWORD = "password2";
+	private static final String VALID_CLIENT_NAME = "alice@CXX.binas.org";
+	private static final String VALID_CLIENT_PASSWORD = "Zd8hqDu23t";
+	private static final String VALID_SERVER_NAME = "binas@CXX.binas.org";
+	private static final String VALID_SERVER_PASSWORD = "MTbvC3";
 	private static final int VALID_DURATION = 30;
 	
 	// Valid Request Tests -------------------------------------------------------------
-	
+	@Test
+	public void testSimpleRequest() throws Exception {
+		long nounce = randomGenerator.nextLong();
+		client.requestTicket(VALID_CLIENT_NAME, VALID_SERVER_NAME, nounce, VALID_DURATION);
+	}
 //	@Test
 //	public void testValidRequest() throws Exception {
 //		final Key clientKey = getKey(VALID_CLIENT_PASSWORD, VALID_CLIENT_NAME);

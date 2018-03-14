@@ -23,6 +23,8 @@
 
 		<ws.name>kerby</ws.name>
 		<ws.url>http://localhost:8888/kerby</ws.url>
+		
+		<passwordFile>/test-secrets.txt</passwordFile>
 	</properties>
 
 	<dependencies>
@@ -139,6 +141,7 @@
 					<mainClass>${mainclass}</mainClass>
 					<arguments>
 						<argument>${ws.url}</argument>
+						<argument>${passwordFile}</argument>
 					</arguments>
 				</configuration>
 			</plugin>

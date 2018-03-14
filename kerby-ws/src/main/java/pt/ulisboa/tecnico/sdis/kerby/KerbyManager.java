@@ -1,12 +1,10 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -16,11 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class KerbyManager {
 	
-	private static final String PASSWORDS_FILENAME = "/passwords.txt";
 	private static final int MIN_TICKET_DURATION = 10;
 	private static final int MAX_TICKET_DURATION = 300;
 	private static Set<Long> previousNounces = Collections.synchronizedSet(new HashSet<Long>());
-	private static ConcurrentHashMap<String, String> passwords = new ConcurrentHashMap<String, String>();
+	private static ConcurrentHashMap<String, Key> knownKeys = new ConcurrentHashMap<String, Key>();
+	private static String salt;
 	
 	// Singleton -------------------------------------------------------------
 	private KerbyManager() {
@@ -44,8 +42,12 @@ public class KerbyManager {
 		/* Validate parameters */
 		if(client == null || client.trim().isEmpty())
 			throw new BadTicketRequestException("Null Client.");
+		if(knownKeys.get(client) == null)
+			throw new BadTicketRequestException("Unknown Client.");
 		if(server == null || server.trim().isEmpty())
 			throw new BadTicketRequestException("Null Server.");
+		if(knownKeys.get(server) == null)
+			throw new BadTicketRequestException("Unknown Server.");
 		if(ticketDuration < MIN_TICKET_DURATION || ticketDuration > MAX_TICKET_DURATION)
 			throw new BadTicketRequestException("Invalid Ticked Duration.");
 		if(previousNounces.contains(nounce))
@@ -53,9 +55,10 @@ public class KerbyManager {
 		
 		
 		try {
-			/* Get Client and Server Keys from a known Passwords file */
-			Key clientKey = getKnownKey(client);
-			Key serverKey = getKnownKey(server);
+			/* Get Previously Generated Client and Server Keys */
+			Key clientKey = knownKeys.get(client);
+			Key serverKey = knownKeys.get(server);
+			
 			/* Generate a new key for Client-Server communication */
 			Key clientServerKey = SecurityHelper.generateKey();
 			
@@ -86,42 +89,26 @@ public class KerbyManager {
 	
 	// Helpers -------------------------------------------------------------
 	
-	/** Reads lines from a text file containing "username,password".
-	 *  Stores the pairs in the userPasswords HashMap
-	 * @throws IOException 
-	 * */
-	private void initPasswords() throws IOException {
-		InputStream inputStream = KerbyManager.class.getResourceAsStream(PASSWORDS_FILENAME);
+	public void initSalt(String saltFilename) throws Exception {
+		InputStream inputStream = KerbyManager.class.getResourceAsStream(saltFilename);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		String line;
-		String[] values;
-		while((line = reader.readLine()) != null) {
-			values = line.split(",");
-			passwords.put(values[0], values[1]);
-		}
-		
-
+		String line = reader.readLine();
+		if(line != null && !line.trim().isEmpty())
+			salt = line;
 	}
 	
-	/** Returns a Client or Server Key based on a known password. 
-	 * If the passwords file has not been read, then it calls initPasswords.
-	 * @throws BadTicketRequestException
-	 * */
-	private Key getKnownKey(String user) throws BadTicketRequestException {
-		try {
-			if(passwords.isEmpty())
-				initPasswords();
-			
-			String password = passwords.get(user);
-			if(password == null)
-				throw new BadTicketRequestException("Unknown User.");
-			
-			Key key = SecurityHelper.generateKeyFromPassword(password, user);
-			return key;
-		} catch(IOException e) {
-			throw new BadTicketRequestException("Error Reading Passwords File.");
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-			throw new BadTicketRequestException("Error Generating Key from Password.");
+	/** Reads Passwords from the given file, generates all keys and stores them in memory. */
+	public void initKeys(String passwordFilename) throws Exception {
+		InputStream inputStream = KerbyManager.class.getResourceAsStream(passwordFilename);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		String line;
+		while((line = reader.readLine()) != null) {
+			line = line.trim();
+			if(line.startsWith("#") || !line.contains(","))
+				continue;
+			String[] values = line.split(",");
+			Key key = SecurityHelper.generateKeyFromPassword(values[1], salt);
+			knownKeys.put(values[0], key);
 		}
 	}
 	

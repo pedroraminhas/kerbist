@@ -10,9 +10,9 @@ public class KerbyApp {
 
 	public static void main(String[] args) throws Exception {
 		// Check arguments
-		if (args.length == 0 || args.length == 2) {
+		if (args.length < 2 || args.length > 5) {
 			System.err.println("Argument(s) missing!");
-			System.err.println("Usage: java " + KerbyApp.class.getName() + " wsURL OR uddiURL wsName wsURL");
+			System.err.println("Usage: java " + KerbyApp.class.getName() + " wsURL passwordFile <saltFile> OR uddiURL wsName wsURL passwordFile <saltFile>");
 			return;
 		}
 
@@ -20,22 +20,35 @@ public class KerbyApp {
 		String wsName = null;
 		String wsURL = null;
 
+		
 		// Create server implementation object, according to options
 		KerbyEndpointManager endpoint = null;
-		if (args.length == 1) {
+		if (args.length == 2 || args.length == 3) {
 			wsURL = args[0];
+			if(args.length == 3)
+				KerbyManager.getInstance().initSalt(args[2]);
+			else
+				System.out.println("WARNING: Using default Salt from kerby-lib for Key Generation.");
+			
+			KerbyManager.getInstance().initKeys(args[1]);
+						
 			endpoint = new KerbyEndpointManager(wsURL);
-			// KerbyManage.getInstance().loadPassword(file);
 
-		} else if (args.length >= 3) {
+		} else if (args.length == 4 || args.length == 5) {
 			uddiURL = args[0];
 			wsName = args[1];
 			wsURL = args[2];
+			if(args.length == 5)
+				KerbyManager.getInstance().initSalt(args[4]);
+			else
+				System.out.println("WARNING: Using default Salt from kerby-lib for Key Generation.");
+			
+			KerbyManager.getInstance().initKeys(args[3]);
+			
 			endpoint = new KerbyEndpointManager(uddiURL, wsName, wsURL);
 			endpoint.setVerbose(true);
-			// Station.getInstance().setId(wsName);
 		}
-
+		
 		try {
 			endpoint.start();
 			endpoint.awaitConnections();
