@@ -19,7 +19,6 @@ public class KerbyApp {
 		String uddiURL = null;
 		String wsName = null;
 		String wsURL = null;
-
 		
 		// Create server implementation object, according to options
 		KerbyEndpointManager endpoint = null;
