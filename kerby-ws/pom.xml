@@ -50,6 +50,12 @@
         	<groupId>pt.ulisboa.tecnico.sdis</groupId>
         	<artifactId>kerby-lib</artifactId>
         	<version>1.0-SNAPSHOT</version>
+        	<exclusions>
+	            <exclusion>
+	                <groupId>pt.ulisboa.tecnico.sdis</groupId>
+	                <artifactId>kerby-ws-cli</artifactId>
+	            </exclusion>
+            </exclusions>
         </dependency>
 	</dependencies>
 
