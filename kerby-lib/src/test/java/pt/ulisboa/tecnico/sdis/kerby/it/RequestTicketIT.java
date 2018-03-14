@@ -46,9 +46,9 @@ public class RequestTicketIT extends BaseIT {
 		CipheredView cipheredSessionKey = result.getSessionKey();
 		CipheredView cipheredTicket = result.getTicket();
 		
-		SessionKey sessionKey = new SessionKey(SecurityHelper.decipher(SessionKeyView.class, cipheredSessionKey, clientKey));
+		SessionKey sessionKey = new SessionKey(cipheredSessionKey, clientKey);
 		
-		Ticket ticket = new Ticket(SecurityHelper.decipher(TicketView.class, cipheredTicket, serverKey));
+		Ticket ticket = new Ticket(cipheredTicket, serverKey);
 		long timeDiff = ticket.getTime2().getTime() - ticket.getTime1().getTime();
 		
 		
@@ -79,11 +79,11 @@ public class RequestTicketIT extends BaseIT {
 		CipheredView cipheredTicket1 = result1.getTicket();
 		CipheredView cipheredTicket2 = result2.getTicket();
 		
-		SessionKey sessionKey1 = new SessionKey(SecurityHelper.decipher(SessionKeyView.class, cipheredSessionKey1, clientKey));
-		SessionKey sessionKey2 = new SessionKey(SecurityHelper.decipher(SessionKeyView.class, cipheredSessionKey2, clientKey));
+		SessionKey sessionKey1 = new SessionKey(cipheredSessionKey1, clientKey);
+		SessionKey sessionKey2 = new SessionKey(cipheredSessionKey2, clientKey);
 		
-		Ticket ticket1 = new Ticket(SecurityHelper.decipher(TicketView.class, cipheredTicket1, serverKey));
-		Ticket ticket2 = new Ticket(SecurityHelper.decipher(TicketView.class, cipheredTicket2, serverKey));
+		Ticket ticket1 = new Ticket(cipheredTicket1, serverKey);
+		Ticket ticket2 = new Ticket(cipheredTicket2, serverKey);
 		long timeDiff1 = ticket1.getTime2().getTime() - ticket1.getTime1().getTime();
 		long timeDiff2 = ticket2.getTime2().getTime() - ticket2.getTime1().getTime();
 		

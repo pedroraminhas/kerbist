@@ -53,7 +53,7 @@ public class Ticket {
 		setView(view);
 	}
 
-	/** Create ticket from data view. */
+	/** Create ticket from ciphered data view and key. */
 	public Ticket(CipheredView cipheredView, Key key) throws KerbyException {
 		decipher(cipheredView, key);
 	}
