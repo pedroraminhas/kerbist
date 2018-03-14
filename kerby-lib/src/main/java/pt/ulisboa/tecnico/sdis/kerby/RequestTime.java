@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.seal;
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.unseal;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.cipher;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.decipher;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXMLBytes;
@@ -172,14 +172,14 @@ public class RequestTime {
 		setView(view);
 	}
 
-	// sealing ---------------------------------------------------------------
+	// ciphering ---------------------------------------------------------------
 
-	public SealedView seal(Key key) throws KerbyException {
-		return SecurityHelper.seal(RequestTimeView.class, view, key);
+	public CipheredView cipher(Key key) throws KerbyException {
+		return SecurityHelper.cipher(RequestTimeView.class, view, key);
 	}
 
-	public void unseal(SealedView sealedView, Key key) throws KerbyException {
-		RequestTimeView view = SecurityHelper.unseal(RequestTimeView.class, sealedView, key);
+	public void uncipher(CipheredView cipheredView, Key key) throws KerbyException {
+		RequestTimeView view = SecurityHelper.decipher(RequestTimeView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);
 	}

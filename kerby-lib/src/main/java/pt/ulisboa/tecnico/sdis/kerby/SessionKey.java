@@ -186,14 +186,14 @@ public class SessionKey {
 		setView(view);
 	}
 
-	// sealing ---------------------------------------------------------------
-
-	public SealedView seal(Key key) throws KerbyException {
-		return SecurityHelper.seal(SessionKeyView.class, view, key);
+	// ciphering ---------------------------------------------------------------
+	
+	public CipheredView cipher(Key key) throws KerbyException {
+		return SecurityHelper.cipher(SessionKeyView.class, view, key);
 	}
 
-	public void unseal(SealedView sealedView, Key key) throws KerbyException {
-		SessionKeyView view = SecurityHelper.unseal(SessionKeyView.class, sealedView, key);
+	public void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+		SessionKeyView view = SecurityHelper.decipher(SessionKeyView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);
 	}

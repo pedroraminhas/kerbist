@@ -59,18 +59,18 @@ public class KerbyManager {
 			/* Generate a new key for Client-Server communication */
 			Key clientServerKey = SecurityHelper.generateKey();
 			
-			/* Create and Seal the Ticket */
+			/* Create and Cipher the Ticket */
 			Ticket ticket = createTicket(client, server, ticketDuration, clientServerKey);
-			SealedView sealedTicket = ticket.seal(serverKey);
+			CipheredView cipheredTicket = ticket.cipher(serverKey);
 			
-			/* Create and Seal the Session Key */
+			/* Create and Cipher the Session Key */
 			SessionKey sessionKey = new SessionKey(clientServerKey, nounce);
-			SealedView sealedSessionKey = sessionKey.seal(clientKey);
+			CipheredView cipheredSessionKey = sessionKey.cipher(clientKey);
 			
 			/* Create SessionKeyAndTicketView */
 			SessionKeyAndTicketView response = new SessionKeyAndTicketView();
-			response.setTicket(sealedTicket);
-			response.setSessionKey(sealedSessionKey);
+			response.setTicket(cipheredTicket);
+			response.setSessionKey(cipheredSessionKey);
 			
 			/* Store Nounce */
 			previousNounces.add(nounce);
@@ -80,7 +80,7 @@ public class KerbyManager {
 		} catch (NoSuchAlgorithmException e) {
 			throw new BadTicketRequestException("Error generating shared key.");
 		} catch (KerbyException e) {
-			throw new BadTicketRequestException("Error while sealing.");
+			throw new BadTicketRequestException("Error while ciphering.");
 		}
 	}
 	

@@ -74,9 +74,9 @@ class SecurityHelper {
 		return initCipher(Cipher.DECRYPT_MODE, key);
 	}
 
-	// sealed views ----------------------------------------------------------
+	// ciphered views ----------------------------------------------------------
 
-	public static <V> SealedView seal(Class<V> viewClass, V view, Key key) throws KerbyException {
+	public static <V> CipheredView cipher(Class<V> viewClass, V view, Key key) throws KerbyException {
 		byte[] plainBytes = null;
 		try {
 			// Use the type name without package as the XML tag name for the data.
@@ -90,20 +90,20 @@ class SecurityHelper {
 			Cipher cipher = initCipher(key);
 			byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-			SealedView sealedView = new SealedView();
-			sealedView.setData(cipherBytes);
-			return sealedView;
+			CipheredView cipheredView = new CipheredView();
+			cipheredView.setData(cipherBytes);
+			return cipheredView;
 
 		} catch (Exception e) {
-			throw new KerbyException("Exception while sealing view!", e);
+			throw new KerbyException("Exception while ciphering view!", e);
 		}
 	}
 
-	public static <V> V unseal(Class<V> viewClass, SealedView sealedView, Key key) throws KerbyException {
+	public static <V> V decipher(Class<V> viewClass, CipheredView cipheredView, Key key) throws KerbyException {
 		byte[] newPlainBytes = null;
 		try {
 			Cipher decipher = initDecipher(key);
-			newPlainBytes = decipher.doFinal(sealedView.getData());
+			newPlainBytes = decipher.doFinal(cipheredView.getData());
 		} catch (Exception e) {
 			throw new KerbyException("Exception while deciphering view!", e);
 		}

@@ -13,30 +13,30 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Node;
 
 /**
- * Class that handles sealed views in different formats. Sealed views are used
+ * Class that handles ciphered views in different formats. Ciphered views are used
  * to transport ciphered Kerberos tickets, authenticators, etc.
  * 
  * @author Miguel Pardal
  *
  */
-public class SealClerk {
+public class CipherClerk {
 
 	// creation --------------------------------------------------------------
 
-	/** Create SealedView from arguments. */
-	public SealedView sealBuild(byte[] data) {
-		SealedView view = new SealedView();
+	/** Create CipheredView from arguments. */
+	public CipheredView cipherBuild(byte[] data) {
+		CipheredView view = new CipheredView();
 		view.setData(data);
 		return view;
 	}
 
-	/** Create a textual representation of the SealedView. */
-	public String sealToString(SealedView view) {
+	/** Create a textual representation of the CipheredView. */
+	public String cipherToString(CipheredView view) {
 		if (view == null)
 			return "null";
 
 		StringBuilder builder = new StringBuilder();
-		builder.append("SealedView [data=");
+		builder.append("CipheredView [data=");
 		builder.append(Arrays.toString(view.getData()));
 		builder.append("]");
 		return builder.toString();
@@ -45,27 +45,27 @@ public class SealClerk {
 	// serialization ---------------------------------------------------------
 
 	/**
-	 * Marshal sealed view to XML document.
+	 * Marshal ciphered view to XML document.
 	 */
-	public Node sealToXMLNode(SealedView view, String sealTagName) throws JAXBException {
-		return viewToXML(SealedView.class, view, new QName(sealTagName));
+	public Node cipherToXMLNode(CipheredView view, String cipherTagName) throws JAXBException {
+		return viewToXML(CipheredView.class, view, new QName(cipherTagName));
 	}
 
-	/** Marshal sealed view to XML bytes. */
-	public byte[] sealToXMLBytes(SealedView view, String sealTagName) throws JAXBException {
-		return viewToXMLBytes(SealedView.class, view, new QName(sealTagName));
+	/** Marshal ciphered view to XML bytes. */
+	public byte[] cipherToXMLBytes(CipheredView view, String cipherTagName) throws JAXBException {
+		return viewToXMLBytes(CipheredView.class, view, new QName(cipherTagName));
 	}
 
 	/**
-	 * Unmarshal sealed view from XML document.
+	 * Unmarshal ciphered view from XML document.
 	 */
-	public SealedView sealFromXMLNode(Node xml) throws JAXBException {
-		return xmlNodeToView(SealedView.class, xml);
+	public CipheredView cipherFromXMLNode(Node xml) throws JAXBException {
+		return xmlNodeToView(CipheredView.class, xml);
 	}
 
-	/** Unmarshal byte array to a sealed view object. */
-	public SealedView sealFromXMLBytes(byte[] bytes) throws JAXBException {
-		return xmlBytesToView(SealedView.class, bytes);
+	/** Unmarshal byte array to a ciphered view object. */
+	public CipheredView cipherFromXMLBytes(byte[] bytes) throws JAXBException {
+		return xmlBytesToView(CipheredView.class, bytes);
 	}
 
 }

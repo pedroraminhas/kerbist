@@ -276,18 +276,18 @@ public class Ticket {
 		setView(view);
 	}
 
-	// sealing ---------------------------------------------------------------
+	// ciphering ---------------------------------------------------------------
 
 	public CipheredView cipher(Key key) throws KerbyException {
-		return SecurityHelper.seal(TicketView.class, view, key);
+		return SecurityHelper.cipher(TicketView.class, view, key);
 	}
 
 	/**
 	 * Decipher is private because it should only be called by constructor when
 	 * receiving a CipheredView of the ticket.
 	 */
-	private void decipher(SealedView sealedView, Key key) throws KerbyException {
-		TicketView view = SecurityHelper.unseal(TicketView.class, sealedView, key);
+	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+		TicketView view = SecurityHelper.decipher(TicketView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);
 	}

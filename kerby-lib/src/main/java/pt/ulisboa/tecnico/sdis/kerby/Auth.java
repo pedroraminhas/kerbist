@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.seal;
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.unseal;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.cipher;
+import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.decipher;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXMLBytes;
@@ -196,12 +196,12 @@ public class Auth {
 
 	// sealing ---------------------------------------------------------------
 
-	public SealedView seal(Key key) throws KerbyException {
-		return SecurityHelper.seal(AuthView.class, view, key);
+	public CipheredView cipher(Key key) throws KerbyException {
+		return SecurityHelper.cipher(AuthView.class, view, key);
 	}
 
-	public void unseal(SealedView sealedView, Key key) throws KerbyException {
-		AuthView view = SecurityHelper.unseal(AuthView.class, sealedView, key);
+	public void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+		AuthView view = SecurityHelper.decipher(AuthView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);
 	}
