@@ -17,7 +17,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 
-class SecurityHelper {
+public class SecurityHelper {
 
 	private static final String CIPHER_ALGO = "AES";
 	private static final int CIPHER_KEY_SIZE = 128;
