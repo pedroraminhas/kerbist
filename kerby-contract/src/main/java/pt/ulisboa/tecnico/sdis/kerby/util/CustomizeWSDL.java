@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/** Class to modify generated WSDL. */
 public class CustomizeWSDL {
 
 	public static void main(String[] args) throws Exception {
