@@ -17,13 +17,17 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 
-class SecurityHelper {
+public class SecurityHelper {
 
-	public static final String CIPHER_ALGO = "AES";
-	public static final int CIPHER_KEY_SIZE = 128;
+	private static final String CIPHER_ALGO = "AES";
+	private static final int CIPHER_KEY_SIZE = 128;
 	
-	public static final String KDF_ALGORITHM = "PBKDF2WithHmacSHA256";
-	public static final int KDF_ITERATIONS = 16000;
+	private static final String KDF_ALGORITHM = "PBKDF2WithHmacSHA256";
+	private static final int KDF_ITERATIONS = 2048;
+	
+	private static final String DEFAULT_SALT = "F2BdmZEp8q";
+	
+	
 
 	// keys ------------------------------------------------------------------
 
@@ -38,9 +42,15 @@ class SecurityHelper {
 		return key;
 	}
 	
-	/** Generates a Key from a Password and a Salt using a Key Derivation Function */
+	/** Generates a Key from a Password and a Salt using a Key Derivation Function.
+	 * @param password The Password to use.
+	 * @param salt The Salt to use. If null, a default Salt will be used. */
 	public static Key generateKeyFromPassword(String password, String salt) 
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
+		
+		if(salt == null || salt.trim().isEmpty())
+			salt = DEFAULT_SALT;
+		
 		char[] passwordCharArray = password.toCharArray();
 		byte[] saltByteArray = salt.getBytes(); 
 		PBEKeySpec spec = new PBEKeySpec(passwordCharArray, saltByteArray, KDF_ITERATIONS, CIPHER_KEY_SIZE);
@@ -74,9 +84,9 @@ class SecurityHelper {
 		return initCipher(Cipher.DECRYPT_MODE, key);
 	}
 
-	// sealed views ----------------------------------------------------------
+	// ciphered views ----------------------------------------------------------
 
-	public static <V> SealedView seal(Class<V> viewClass, V view, Key key) throws KerbyException {
+	public static <V> CipheredView cipher(Class<V> viewClass, V view, Key key) throws KerbyException {
 		byte[] plainBytes = null;
 		try {
 			// Use the type name without package as the XML tag name for the data.
@@ -90,20 +100,20 @@ class SecurityHelper {
 			Cipher cipher = initCipher(key);
 			byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-			SealedView sealedView = new SealedView();
-			sealedView.setData(cipherBytes);
-			return sealedView;
+			CipheredView cipheredView = new CipheredView();
+			cipheredView.setData(cipherBytes);
+			return cipheredView;
 
 		} catch (Exception e) {
-			throw new KerbyException("Exception while sealing view!", e);
+			throw new KerbyException("Exception while ciphering view!", e);
 		}
 	}
 
-	public static <V> V unseal(Class<V> viewClass, SealedView sealedView, Key key) throws KerbyException {
+	public static <V> V decipher(Class<V> viewClass, CipheredView cipheredView, Key key) throws KerbyException {
 		byte[] newPlainBytes = null;
 		try {
 			Cipher decipher = initDecipher(key);
-			newPlainBytes = decipher.doFinal(sealedView.getData());
+			newPlainBytes = decipher.doFinal(cipheredView.getData());
 		} catch (Exception e) {
 			throw new KerbyException("Exception while deciphering view!", e);
 		}

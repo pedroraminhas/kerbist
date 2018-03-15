@@ -23,6 +23,8 @@
 
 		<ws.name>kerby</ws.name>
 		<ws.url>http://localhost:8888/kerby</ws.url>
+		
+		<passwordFile>/test-secrets.txt</passwordFile>
 	</properties>
 
 	<dependencies>
@@ -50,6 +52,12 @@
         	<groupId>pt.ulisboa.tecnico.sdis</groupId>
         	<artifactId>kerby-lib</artifactId>
         	<version>1.0-SNAPSHOT</version>
+        	<exclusions>
+	            <exclusion>
+	                <groupId>pt.ulisboa.tecnico.sdis</groupId>
+	                <artifactId>kerby-ws-cli</artifactId>
+	            </exclusion>
+            </exclusions>
         </dependency>
 	</dependencies>
 
@@ -133,6 +141,7 @@
 					<mainClass>${mainclass}</mainClass>
 					<arguments>
 						<argument>${ws.url}</argument>
+						<argument>${passwordFile}</argument>
 					</arguments>
 				</configuration>
 			</plugin>
