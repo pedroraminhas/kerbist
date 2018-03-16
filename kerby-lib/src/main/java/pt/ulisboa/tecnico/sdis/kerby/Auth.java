@@ -51,6 +51,10 @@ public class Auth {
 	public Auth(AuthView view) {
 		setView(view);
 	}
+	
+	public Auth(String x, Date timeRequest) {
+		setView(authBuild(x, timeRequest));
+	}
 
 	// After construction, view can never be null, and can never be set to null.
 	// This invariant is assumed to be true in the remaining code.
