@@ -17,13 +17,17 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 
-class SecurityHelper {
+public class SecurityHelper {
 
-	public static final String CIPHER_ALGO = "AES";
-	public static final int CIPHER_KEY_SIZE = 128;
+	private static final String CIPHER_ALGO = "AES";
+	private static final int CIPHER_KEY_SIZE = 128;
 	
-	public static final String KDF_ALGORITHM = "PBKDF2WithHmacSHA256";
-	public static final int KDF_ITERATIONS = 16000;
+	private static final String KDF_ALGORITHM = "PBKDF2WithHmacSHA256";
+	private static final int KDF_ITERATIONS = 2048;
+	
+	private static final String DEFAULT_SALT = "F2BdmZEp8q";
+	
+	
 
 	// keys ------------------------------------------------------------------
 
@@ -38,9 +42,15 @@ class SecurityHelper {
 		return key;
 	}
 	
-	/** Generates a Key from a Password and a Salt using a Key Derivation Function */
+	/** Generates a Key from a Password and a Salt using a Key Derivation Function.
+	 * @param password The Password to use.
+	 * @param salt The Salt to use. If null, a default Salt will be used. */
 	public static Key generateKeyFromPassword(String password, String salt) 
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
+		
+		if(salt == null || salt.trim().isEmpty())
+			salt = DEFAULT_SALT;
+		
 		char[] passwordCharArray = password.toCharArray();
 		byte[] saltByteArray = salt.getBytes(); 
 		PBEKeySpec spec = new PBEKeySpec(passwordCharArray, saltByteArray, KDF_ITERATIONS, CIPHER_KEY_SIZE);

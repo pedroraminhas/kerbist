@@ -1,10 +1,5 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.jws.WebService;
 
 /**
@@ -44,10 +39,6 @@ public class KerbyPortImpl implements KerbyPortType {
 		return result;
 	}
 
-	@Override
-	public String dummy(AuthView arg0, RequestTimeView arg1, CipheredView arg2, SessionKeyView arg3, TicketView arg4) {
-		return this.endpointManager.getWsName() + " up-and-running";
-	}
 	
 	// Exception helper -----------------------------------------------------
 	

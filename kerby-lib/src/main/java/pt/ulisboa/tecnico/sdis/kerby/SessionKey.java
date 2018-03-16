@@ -45,6 +45,11 @@ public class SessionKey {
 		setView(view);
 	}
 
+	/** Create SessionKey from ciphered data view and key. */
+	public SessionKey(CipheredView cipheredView, Key key) throws KerbyException {
+		decipher(cipheredView, key);
+	}
+	
 	// After construction, view can never be null, and can never be set to null.
 	// This invariant is assumed to be true in the remaining code.
 
@@ -192,7 +197,7 @@ public class SessionKey {
 		return SecurityHelper.cipher(SessionKeyView.class, view, key);
 	}
 
-	public void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		SessionKeyView view = SecurityHelper.decipher(SessionKeyView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);

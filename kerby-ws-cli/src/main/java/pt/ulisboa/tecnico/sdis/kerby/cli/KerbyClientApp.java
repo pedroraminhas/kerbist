@@ -1,5 +1,9 @@
 package pt.ulisboa.tecnico.sdis.kerby.cli;
 
+import java.util.Random;
+
+import pt.ulisboa.tecnico.sdis.kerby.SessionKeyAndTicketView;
+
 public class KerbyClientApp {
 
 	public static void main(String[] args) throws Exception {
@@ -34,7 +38,8 @@ public class KerbyClientApp {
 		// the actual tests are made using JUnit
 
 		System.out.println("Invoke dummy()...");
-		String result = client.dummy();
+		SessionKeyAndTicketView result = client.requestTicket("alice@CXX.binas.org", "binas@CXX.binas.org",
+				new Random().nextLong(), 60 /* seconds */);
 		System.out.print("Result: ");
 		System.out.println(result);
 
