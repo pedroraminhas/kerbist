@@ -39,11 +39,11 @@ public class RequestTime {
 	}
 	
 	/** Create a default view */
-	//public TimeRequest() {
-	//	RequestTimeView view = new RequestTimeView();
-	//	view.setTimeRequest(dateToXML(new Date()));
-	//	setView(view);
-	//}
+	public RequestTime() {
+		RequestTimeView view = new RequestTimeView();
+		view.setTimeRequest(null);
+		setView(view);
+	}
 	
 	/** Create RequestTime from data view. */
 	public RequestTime(RequestTimeView view) {
@@ -178,7 +178,7 @@ public class RequestTime {
 		return SecurityHelper.cipher(RequestTimeView.class, view, key);
 	}
 
-	public void uncipher(CipheredView cipheredView, Key key) throws KerbyException {
+	public void decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		RequestTimeView view = SecurityHelper.decipher(RequestTimeView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);
