@@ -153,20 +153,18 @@ public class RequestTimeTest {
 	public void testCipherRequestTime() throws Exception {
 		final Calendar calendar = Calendar.getInstance();
 		final Date t1 = calendar.getTime();
-		RequestTime requestTimeClerk = newTestRequestTime(t1);
+		RequestTime requestTime1 = newTestRequestTime(t1);
 		
 		// seal requestTime with server key
 		final Key serverKey = generateKey();
-		CipheredView cipheredRequestTimeView = requestTimeClerk.cipher(serverKey);
-
-		RequestTime otherClerk = newTestRequestTime();
+		CipheredView cipheredRequestTimeView = requestTime1.cipher(serverKey);
 		
 		// decipher requestTime with server key
-		otherClerk.decipher(cipheredRequestTimeView , serverKey);
-		
+		RequestTime requestTime2 = new RequestTime(cipheredRequestTimeView,serverKey);
+				
 		
 		// compare requestTimes
-		assertTrue(requestTimeClerk.equals(otherClerk));
+		assertTrue(requestTime1.equals(requestTime2));
 	}
 
 }

@@ -46,7 +46,10 @@ public class Ticket {
 	// TODO create constructor without times (defaults e.g. now and now+60sec are
 	// created)
 
-	// TODO create constructor without key and times
+	// create constructor without key and times
+	protected Ticket() {
+		//For tests
+	}
 
 	/** Create ticket from data view. */
 	public Ticket(TicketView view) {
@@ -106,7 +109,7 @@ public class Ticket {
 
 	public void setTime2(Date time2) {
 		XMLGregorianCalendar xgc = dateToXML(time2);
-		view.setTime1(xgc);
+		view.setTime2(xgc);
 	}
 
 	public Key getKeyXY() {
