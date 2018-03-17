@@ -28,7 +28,7 @@ public class CustomizeWSDL {
 
 	public static void main(String[] args) throws Exception {
 		final File inputFile = new File("./target/generated-sources/wsdl/KerbyService.wsdl");
-		final File outputFile = new File("./Kerby.wsdl");
+		final File outputFile = new File("./KerbyService.wsdl");
 
 		// load generated WSDL
 		System.out.println("Loading " + inputFile + " ...");
