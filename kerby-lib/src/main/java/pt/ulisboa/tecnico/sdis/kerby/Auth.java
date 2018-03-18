@@ -55,6 +55,14 @@ public class Auth {
 	public Auth(String x, Date timeRequest) {
 		setView(authBuild(x, timeRequest));
 	}
+	
+	public Auth(Node node) throws JAXBException {
+		fromXMLNode(node);
+	}
+	
+	public Auth(CipheredView view, Key key) throws KerbyException {
+		decipher(view, key);
+	}
 
 	// After construction, view can never be null, and can never be set to null.
 	// This invariant is assumed to be true in the remaining code.
@@ -204,7 +212,7 @@ public class Auth {
 		return SecurityHelper.cipher(AuthView.class, view, key);
 	}
 
-	public void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		AuthView view = SecurityHelper.decipher(AuthView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);
