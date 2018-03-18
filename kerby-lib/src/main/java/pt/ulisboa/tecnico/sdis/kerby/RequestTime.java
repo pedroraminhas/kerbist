@@ -49,7 +49,16 @@ public class RequestTime {
 	public RequestTime(RequestTimeView view) {
 		setView(view);
 	}
+	
+	public RequestTime(Date timeRequest) {
+		setView(requestTimeBuild(timeRequest));
+	}
 
+	public RequestTime(CipheredView view, Key key) throws KerbyException {
+		decipher(view, key);
+	}
+	
+	
 	// After construction, view can never be null, and can never be set to null.
 	// This invariant is assumed to be true in the remaining code.
 
@@ -178,7 +187,7 @@ public class RequestTime {
 		return SecurityHelper.cipher(RequestTimeView.class, view, key);
 	}
 
-	public void uncipher(CipheredView cipheredView, Key key) throws KerbyException {
+	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		RequestTimeView view = SecurityHelper.decipher(RequestTimeView.class, cipheredView, key);
 		// set view should not allow null
 		setView(view);
