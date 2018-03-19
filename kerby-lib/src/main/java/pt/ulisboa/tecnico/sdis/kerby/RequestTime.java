@@ -55,7 +55,12 @@ public class RequestTime {
 		decipher(cipheredView, key);
 	}
 
+	public RequestTime(Date timeRequest) {
+		setView(requestTimeBuild(timeRequest));
+	}
 
+	
+	
 	// After construction, view can never be null, and can never be set to null.
 	// This invariant is assumed to be true in the remaining code.
 
@@ -184,7 +189,6 @@ public class RequestTime {
 		return SecurityHelper.cipher(RequestTimeView.class, view, key);
 	}
 
-	
 	/**
 	 * Decipher is private because it should only be called by constructor when
 	 * receiving a CipheredView of the RequestTime.
