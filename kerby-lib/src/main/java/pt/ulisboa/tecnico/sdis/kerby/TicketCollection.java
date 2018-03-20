@@ -14,14 +14,15 @@ public class TicketCollection {
 		acceptedDifference = difference;
 	}
 	
-	/** Stores the Ticket and FinalTime Indexed by the Server Name. */
-	public void storeTicket(String serverName, CipheredView cipheredTicket, long finalValidTime) {
-		TicketCollectionEntry newEntry = new TicketCollectionEntry(cipheredTicket, finalValidTime);
+	/** Stores the Ticket and FinalTime Indexed by the Server Name. 
+	 * @param finalValidTime Final Valid Time in Milliseconds since January 1st 1970 */
+	public void storeTicket(String serverName, SessionKeyAndTicketView sessionKeyAndTicketView, long finalValidTime) {
+		TicketCollectionEntry newEntry = new TicketCollectionEntry(sessionKeyAndTicketView, finalValidTime);
 		ticketCollection.put(serverName, newEntry);
 	}
 	
-	/** Returns a Stored Ticket for the Given Server if a Valid Ticket Exists. Else, Returns null. */
-	public CipheredView getTicket(String serverName) {
+	/** Returns a Stored SessionKeyAndTicketView for the Given Server if a Valid Entry Exists. Else, Returns null. */
+	public SessionKeyAndTicketView getTicket(String serverName) {
 		TicketCollectionEntry storedEntry = ticketCollection.get(serverName);
 		if(storedEntry == null)
 			return null;
@@ -33,7 +34,7 @@ public class TicketCollection {
 		if(entryTime - currentTime < acceptedDifference)
 			return null;
 		else
-			return storedEntry.getTicket();
+			return storedEntry.getSessionKeyAndTicketView();
 	}
 	
 	public void clear() {

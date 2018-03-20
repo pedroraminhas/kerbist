@@ -1,16 +1,16 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
 public class TicketCollectionEntry {
-	private CipheredView cipheredTicket;
+	private SessionKeyAndTicketView sessionKeyAndTicketView;
 	private long finalValidTime;
 	
-	public TicketCollectionEntry(CipheredView cipheredTicket, long finalValidTime) {
-		this.cipheredTicket = cipheredTicket;
+	public TicketCollectionEntry(SessionKeyAndTicketView sessionKeyAndTicketView, long finalValidTime) {
+		this.sessionKeyAndTicketView = sessionKeyAndTicketView;
 		this.finalValidTime = finalValidTime;
 	}
 	
-	public CipheredView getTicket() {
-		return cipheredTicket;
+	public SessionKeyAndTicketView getSessionKeyAndTicketView() {
+		return sessionKeyAndTicketView;
 	}
 	
 	public long getFinalValidTime() {
@@ -23,8 +23,8 @@ public class TicketCollectionEntry {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("TicketCollectionEntry [cipheredTicket=");
-		builder.append(cipheredTicket.toString());
+		builder.append("TicketCollectionEntry [sessionKeyAndTicketView=");
+		builder.append(sessionKeyAndTicketView.toString());
 		builder.append(", finalValidTime=");
 		builder.append(finalValidTime);
 		builder.append("]");
@@ -35,8 +35,8 @@ public class TicketCollectionEntry {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cipheredTicket == null) ? 0 : cipheredTicket.hashCode());
 		result = prime * result + (int) (finalValidTime ^ (finalValidTime >>> 32));
+		result = prime * result + ((sessionKeyAndTicketView == null) ? 0 : sessionKeyAndTicketView.hashCode());
 		return result;
 	}
 
@@ -49,14 +49,16 @@ public class TicketCollectionEntry {
 		if (getClass() != obj.getClass())
 			return false;
 		TicketCollectionEntry other = (TicketCollectionEntry) obj;
-		if (cipheredTicket == null) {
-			if (other.cipheredTicket != null)
-				return false;
-		} else if (!cipheredTicket.equals(other.cipheredTicket))
-			return false;
 		if (finalValidTime != other.finalValidTime)
+			return false;
+		if (sessionKeyAndTicketView == null) {
+			if (other.sessionKeyAndTicketView != null)
+				return false;
+		} else if (!sessionKeyAndTicketView.equals(other.sessionKeyAndTicketView))
 			return false;
 		return true;
 	}
+
+	
 	
 }
