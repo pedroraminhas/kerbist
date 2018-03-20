@@ -214,7 +214,7 @@ public class RequestTicketIT extends BaseIT {
 	
 	// Test Helpers -------------------------------------------------------------
 	private Key getKey(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		return SecurityHelper.generateKeyFromPassword(password, null);
+		return SecurityHelper.generateKeyFromPassword(password);
 	}
 
 }

@@ -42,14 +42,19 @@ public class SecurityHelper {
 		return key;
 	}
 	
-	/** Generates a Key from a Password and a Salt using a Key Derivation Function.
-	 * @param password The Password to use.
-	 * @param salt The Salt to use. If null, a default Salt will be used. */
-	public static Key generateKeyFromPassword(String password, String salt) 
+	/** Generates a Key from a Password using a Key Derivation Function and a Default Salt.
+	 * @param password The Password to use. */
+	public static Key generateKeyFromPassword(String password) 
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		
-		if(salt == null || salt.trim().isEmpty())
-			salt = DEFAULT_SALT;
+		return generateKeyFromPassword(password, DEFAULT_SALT);
+	}
+	
+	/** Generates a Key from a Password and a Salt using a Key Derivation Function.
+	 * @param password The Password to use.
+	 * @param salt The Salt to use. */
+	public static Key generateKeyFromPassword(String password, String salt) 
+			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		
 		char[] passwordCharArray = password.toCharArray();
 		byte[] saltByteArray = salt.getBytes(); 

@@ -109,7 +109,12 @@ public class KerbyManager {
 			if(line.startsWith("#") || !line.contains(","))
 				continue;
 			String[] values = line.split(",");
-			Key key = SecurityHelper.generateKeyFromPassword(values[1], salt);
+			Key key;
+			if(salt == null) {
+				key = SecurityHelper.generateKeyFromPassword(values[1]);
+			} else {
+				key = SecurityHelper.generateKeyFromPassword(values[1], salt);
+			}
 			knownKeys.put(values[0], key);
 		}
 	}
