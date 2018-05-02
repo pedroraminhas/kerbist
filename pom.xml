@@ -10,7 +10,6 @@
 
 	<modules>
 		<!-- specify modules to include in the build reactor -->
-		<module>kerby-contract</module>
 		<module>kerby-ws</module>
 		<module>kerby-ws-cli</module>
 		<module>kerby-lib</module>
