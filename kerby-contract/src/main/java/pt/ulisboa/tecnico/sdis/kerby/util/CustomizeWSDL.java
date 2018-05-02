@@ -27,8 +27,15 @@ import org.w3c.dom.NodeList;
 public class CustomizeWSDL {
 
 	public static void main(String[] args) throws Exception {
-		final File inputFile = new File("./target/generated-sources/wsdl/KerbyService.wsdl");
-		final File outputFile = new File("./KerbyService.wsdl");
+		// Check arguments
+		if (args.length < 2) {
+			System.err.println("Argument(s) missing!");
+			System.err.println("Usage: java " + CustomizeWSDL.class.getName() + " <inputFile> <outputFile>");
+			return;
+		}
+
+		final File inputFile = new File(args[0]);
+		final File outputFile = new File(args[1]);
 
 		// load generated WSDL
 		System.out.println("Loading " + inputFile + " ...");

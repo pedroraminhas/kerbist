@@ -15,6 +15,7 @@
 
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		
 	</properties>
 
 	<dependencies>
@@ -64,7 +65,10 @@
 					<!-- to prevent deprecation warning: -->
 					<killAfter>-1</killAfter>
 					<mainClass>pt.ulisboa.tecnico.sdis.kerby.util.CustomizeWSDL</mainClass>
-					<arguments />
+					<arguments>
+						<argument>${basedir}/target/generated-sources/wsdl/KerbyService.wsdl</argument>
+						<argument>${basedir}/KerbyService.wsdl</argument>
+					</arguments>
 				</configuration>
 			</plugin>
 		</plugins>
