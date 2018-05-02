@@ -150,6 +150,15 @@
 					</programs>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0</version>
+				<configuration>
+					<!-- option to ignore javadoc errors contained in the wsimport generated code -->
+					<additionalJOption>-Xdoclint:none</additionalJOption>
+				</configuration>
+            </plugin>
 		</plugins>
 	</build>
 
