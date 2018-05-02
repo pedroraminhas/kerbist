@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class that stores and returns Tickets if they are still valid, within an accepted difference between final valid time and current time.
+ * @author Guilherme Ilunga
  * */
 public class TicketCollection {
 	/** Maps Server Name to TicketEntry */
@@ -34,6 +35,7 @@ public class TicketCollection {
 	/** 
 	 * Returns a Stored SessionKeyAndTicketView for the Given Server if a Valid Entry Exists. Else, Returns null. 
 	 * @param serverName The name of the server.
+	 * @return The Stored SessionKeyAndTicketView or Null if it has expired or does not exist.
 	 * */
 	public SessionKeyAndTicketView getTicket(String serverName) {
 		TicketCollectionEntry storedEntry = ticketCollection.get(serverName);

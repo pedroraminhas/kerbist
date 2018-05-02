@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.sdis.kerby;
 
 /**
  * Class used as an Entry for a Ticket Collection. Stores a SessionKeyAndTicketView and its Final Valid Time.
+ * @author Guilherme Ilunga
  * */
 public class TicketCollectionEntry {
 	private SessionKeyAndTicketView sessionKeyAndTicketView;

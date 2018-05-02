@@ -225,11 +225,17 @@ public class Auth {
 	}
 
 	// sealing ---------------------------------------------------------------
-
+	/**
+	 * Ciphers the Auth.
+	 * @param key The Key used to cipher the Auth. 
+	 * @return The Ciphered AuthView. */
 	public CipheredView cipher(Key key) throws KerbyException {
 		return SecurityHelper.cipher(AuthView.class, view, key);
 	}
 
+	/**
+	 * Creates an Auth from a Ciphered Auth.
+	 * */
 	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		AuthView view = SecurityHelper.decipher(AuthView.class, cipheredView, key);
 		// set view should not allow null
