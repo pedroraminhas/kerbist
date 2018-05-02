@@ -1,18 +1,28 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
+/**
+ * Class used as an Entry for a Ticket Collection. Stores a SessionKeyAndTicketView and its Final Valid Time.
+ * */
 public class TicketCollectionEntry {
 	private SessionKeyAndTicketView sessionKeyAndTicketView;
 	private long finalValidTime;
 	
+	/**
+	 * Creates a TicketCollectionEntry.
+	 * @param sessionKeyAndTicketView The sessionKeyAndTicketView to store.
+	 * @param finalValidTime The Final ValidTime of the sessionKeyAndTicketView, in miliseconds since January 1s 1970.
+	 * */
 	public TicketCollectionEntry(SessionKeyAndTicketView sessionKeyAndTicketView, long finalValidTime) {
 		this.sessionKeyAndTicketView = sessionKeyAndTicketView;
 		this.finalValidTime = finalValidTime;
 	}
 	
+	/** Returns the SessionKeyAndTicketView associated with this TicketCollectionEntry. */
 	public SessionKeyAndTicketView getSessionKeyAndTicketView() {
 		return sessionKeyAndTicketView;
 	}
 	
+	/** Returns the Final Valid Time associated with this TicketCollectionEntry. */
 	public long getFinalValidTime() {
 		return finalValidTime;
 	}
@@ -22,7 +32,7 @@ public class TicketCollectionEntry {
 	/** Create a textual representation of the TicketCollectionEntry. */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(); 
 		builder.append("TicketCollectionEntry [sessionKeyAndTicketView=");
 		builder.append(sessionKeyAndTicketView.toString());
 		builder.append(", finalValidTime=");
@@ -31,6 +41,7 @@ public class TicketCollectionEntry {
 		return builder.toString();
 	}
 
+	/** Returns a hash code value for the TicketCollectionEntry. */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -40,6 +51,7 @@ public class TicketCollectionEntry {
 		return result;
 	}
 
+	/** Indicates whether some other object is "equal to" this TicketCollectionEntry. */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

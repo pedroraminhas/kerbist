@@ -17,6 +17,9 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 
+/**
+ * Class containing several Security related helper methods.
+ * */
 public class SecurityHelper {
 
 	private static final String CIPHER_ALGO = "AES";
@@ -31,10 +34,14 @@ public class SecurityHelper {
 
 	// keys ------------------------------------------------------------------
 
+	/** Generates a key using default parameters. */
 	public static Key generateKey() throws NoSuchAlgorithmException {
 		return generateKey(CIPHER_ALGO, CIPHER_KEY_SIZE);
 	}
 
+	/** Generates a key with the given parameters.
+	 * @param algorithm The Algorithm used to generate the key.
+	 * @param keySize The Size of the key to generate. */
 	private static Key generateKey(String algorithm, int keySize) throws NoSuchAlgorithmException {
 		KeyGenerator keyGen = KeyGenerator.getInstance(algorithm);
 		keyGen.init(keySize);
@@ -90,7 +97,7 @@ public class SecurityHelper {
 	}
 
 	// ciphered views ----------------------------------------------------------
-
+	/** Ciphers a View with a Key. */
 	public static <V> CipheredView cipher(Class<V> viewClass, V view, Key key) throws KerbyException {
 		byte[] plainBytes = null;
 		try {
@@ -114,6 +121,7 @@ public class SecurityHelper {
 		}
 	}
 
+	/** Deciphers a View with a Key. */
 	public static <V> V decipher(Class<V> viewClass, CipheredView cipheredView, Key key) throws KerbyException {
 		byte[] newPlainBytes = null;
 		try {

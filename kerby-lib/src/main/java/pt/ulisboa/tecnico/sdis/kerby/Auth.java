@@ -26,12 +26,16 @@ import org.w3c.dom.Node;
  */
 public class Auth {
 
-	/** auth data container. After creation, cannot be null. */
+	/** Auth data container. After creation, cannot be null. */
 	private AuthView view;
 
 	// Auth creation -------------------------------------------------------
 
-	/** Create AuthView from arguments. */
+	/** Create AuthView from arguments. 
+	 * @param x A String with the Client Name.
+	 * @param timeRequest The Date of the Request.
+	 * @return AuthView created from arguments.
+	 * */
 	public AuthView authBuild(String x, Date timeRequest) {
 		AuthView auth = new AuthView();
 		auth.setTimeRequest(dateToXML(timeRequest));
@@ -47,19 +51,31 @@ public class Auth {
 	//	setView(view);
 	//}
 	
-	/** Create auth from data view. */
+	/** Create auth from data view. 
+	 * */
 	public Auth(AuthView view) {
 		setView(view);
 	}
 	
+	/** Create Auth from arguments.
+	 * @param x A String with the Client Name.
+	 * @param timeRequest The Date of the Request.
+	 * */
 	public Auth(String x, Date timeRequest) {
 		setView(authBuild(x, timeRequest));
 	}
 	
+	/** Create Auth from argument an XML Node.
+	 * @param node An XML Node containing an Auth
+	 * */
 	public Auth(Node node) throws JAXBException {
 		fromXMLNode(node);
 	}
 	
+	/** Create Auth from a Ciphered AuthView.
+	 * @param view A Ciphered AuthView.
+	 * @param key The Key used to decipher the View.
+	 * */
 	public Auth(CipheredView view, Key key) throws KerbyException {
 		decipher(view, key);
 	}
@@ -99,7 +115,8 @@ public class Auth {
 
 	// object methods --------------------------------------------------------
 
-	/** Create a textual representation of the AuthView. */
+	/** Create a textual representation of the AuthView. 
+	 * @return String representation of AuthView. */
 	public String authToString() {
 		if (view == null) {
 			return "null";
@@ -160,7 +177,8 @@ public class Auth {
 
 	// auth validation -----------------------------------------------------
 
-	/** Validate contents of AuthView. */
+	/** Validate contents of AuthView. 
+	 * @throws KerbyException If the AuthView or its elements are null or empty. */
 	public void validate() throws KerbyException {
 
 		// check nulls and empty strings
