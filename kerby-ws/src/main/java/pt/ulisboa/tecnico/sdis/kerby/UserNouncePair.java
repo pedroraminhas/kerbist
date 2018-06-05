@@ -1,20 +1,20 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-class UserNouncePair {
+class UserNoncePair {
 	private String username;
-	private long nounce;
+	private long nonce;
 	
-	public UserNouncePair(String name, long n) {
+	public UserNoncePair(String name, long n) {
 		username = name;
-		nounce = n;
+		nonce = n;
 	}
 	
 	public String getUsername() {
 		return username;
 	}
 	
-	public long getNounce() {
-		return nounce;
+	public long getNonce() {
+		return nonce;
 	}
 	
 	// object methods --------------------------------------------------------
@@ -25,7 +25,7 @@ class UserNouncePair {
 		builder.append("UserNouncePair [username=");
 		builder.append(username);
 		builder.append(", nounce=");
-		builder.append(nounce);
+		builder.append(nonce);
 		builder.append("]");
 		return builder.toString();
 	}
@@ -34,7 +34,7 @@ class UserNouncePair {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (nounce ^ (nounce >>> 32));
+		result = prime * result + (int) (nonce ^ (nonce >>> 32));
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -47,8 +47,8 @@ class UserNouncePair {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserNouncePair other = (UserNouncePair) obj;
-		if (nounce != other.nounce)
+		UserNoncePair other = (UserNoncePair) obj;
+		if (nonce != other.nonce)
 			return false;
 		if (username == null) {
 			if (other.username != null)

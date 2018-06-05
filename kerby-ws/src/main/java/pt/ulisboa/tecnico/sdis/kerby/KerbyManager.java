@@ -16,7 +16,8 @@ public class KerbyManager {
 	
 	private static final int MIN_TICKET_DURATION = 10;
 	private static final int MAX_TICKET_DURATION = 300;
-	private static Set<UserNouncePair> previousNounces = Collections.synchronizedSet(new HashSet<UserNouncePair>());
+	private static final boolean VALIDATE_NONCE = false;
+	private static Set<UserNoncePair> previousNonces = Collections.synchronizedSet(new HashSet<UserNoncePair>());
 	private static ConcurrentHashMap<String, Key> knownKeys = new ConcurrentHashMap<String, Key>();
 	private static String salt;
 	
@@ -36,7 +37,7 @@ public class KerbyManager {
 		return SingletonHolder.INSTANCE;
 	}
 	
-	public SessionKeyAndTicketView requestTicket(String client, String server, long nounce, int ticketDuration) 
+	public SessionKeyAndTicketView requestTicket(String client, String server, long nonce, int ticketDuration) 
 			throws BadTicketRequestException {
 		
 		/* Validate parameters */
@@ -51,9 +52,11 @@ public class KerbyManager {
 		if(ticketDuration < MIN_TICKET_DURATION || ticketDuration > MAX_TICKET_DURATION)
 			throw new BadTicketRequestException("Invalid Ticked Duration.");
 		
-		UserNouncePair userNounce = new UserNouncePair(client, nounce);
-		if(previousNounces.contains(userNounce))
-			throw new BadTicketRequestException("Repeated Nounce, possible Replay Attack.");
+		if(VALIDATE_NONCE) {
+			UserNoncePair userNonce = new UserNoncePair(client, nonce);
+			if(!previousNonces.add(userNonce))
+				throw new BadTicketRequestException("Repeated Nonce, possible Replay Attack.");
+		}
 		
 		
 		try {
@@ -69,7 +72,7 @@ public class KerbyManager {
 			CipheredView cipheredTicket = ticket.cipher(serverKey);
 			
 			/* Create and Cipher the Session Key */
-			SessionKey sessionKey = new SessionKey(clientServerKey, nounce);
+			SessionKey sessionKey = new SessionKey(clientServerKey, nonce);
 			CipheredView cipheredSessionKey = sessionKey.cipher(clientKey);
 			
 			/* Create SessionKeyAndTicketView */
@@ -77,8 +80,7 @@ public class KerbyManager {
 			response.setTicket(cipheredTicket);
 			response.setSessionKey(cipheredSessionKey);
 			
-			/* Store UserNouncePair */
-			previousNounces.add(userNounce);
+			
 			
 			return response;
 			
