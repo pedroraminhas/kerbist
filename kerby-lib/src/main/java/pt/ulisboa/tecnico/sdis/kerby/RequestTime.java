@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
+import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.cipher;
 import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.decipher;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
@@ -50,16 +52,43 @@ public class RequestTime {
 		setView(view);
 	}
 	
-	/** Create RequestTime from data view. */
-	public RequestTime(CipheredView cipheredView, Key key) throws KerbyException {
-		decipher(cipheredView, key);
-	}
-
 	public RequestTime(Date timeRequest) {
 		setView(requestTimeBuild(timeRequest));
 	}
-
 	
+	/** Create RequestTime from an XML Node.
+	 * @param node An XML Node containing an RequestTime
+	 * */
+	public static RequestTime makeRequestTimeFromXMLNode(Node node) throws JAXBException {
+		RequestTimeView view = fromXMLNode(node);
+		return new RequestTime(view);
+	}
+	
+	/** Create RequestTime from a Ciphered RequestTimeView.
+	 * @param view A Ciphered RequestTimeView.
+	 * @param key The Key used to decipher the View.
+	 * */
+	public static RequestTime makeRequestTimeFromCipheredView(CipheredView cipheredView, Key key) throws KerbyException {
+		RequestTimeView view = decipher(cipheredView, key);
+		return new RequestTime(view);
+	}
+	
+	/** Create RequestTime from a XML Bytes.
+	 * @param node A byte array representing an RequestTime
+	 * */
+	public static RequestTime makeRequestTimeFromXMLBytes(byte[] bytes) throws JAXBException {
+		RequestTimeView view = fromXMLBytes(bytes);
+		return new RequestTime(view);
+	}
+
+	/** Create RequestTime from a Base64 String.
+	 * @param node A Base64 String representing an RequestTime
+	 * */
+	public static RequestTime makeRequestTimeFromBase64String(String base64String) throws JAXBException {
+		RequestTimeView view = fromBase64String(base64String);
+		return new RequestTime(view);
+	}
+
 	
 	// After construction, view can never be null, and can never be set to null.
 	// This invariant is assumed to be true in the remaining code.
@@ -166,21 +195,31 @@ public class RequestTime {
 	public byte[] toXMLBytes(String requestTimeTagName) throws JAXBException {
 		return viewToXMLBytes(RequestTimeView.class, view, new QName(requestTimeTagName));
 	}
+	
+	/** Marshal requestTime to Base64 String. */
+	public String toBase64String(String requestTimeTagName) throws JAXBException {
+		byte[] xmlBytes = viewToXMLBytes(RequestTimeView.class, view, new QName(requestTimeTagName));
+		return printBase64Binary(xmlBytes);
+	}
 
 	/**
 	 * Unmarshal requestTime from XML document.
 	 */
-	public void fromXMLNode(Node xml) throws JAXBException {
+	private static RequestTimeView fromXMLNode(Node xml) throws JAXBException {
 		RequestTimeView view= xmlNodeToView(RequestTimeView.class, xml);
-		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 	/** Unmarshal byte array to a view object. */
-	public void fromXMLBytes(byte[] bytes) throws JAXBException {
+	private static RequestTimeView fromXMLBytes(byte[] bytes) throws JAXBException {
 		RequestTimeView view = xmlBytesToView(RequestTimeView.class, bytes);
-		// set view should not allow null
-		setView(view);
+		return view;
+	}
+	
+	/** Unmarshal requestTime from Base64 String. */
+	private static RequestTimeView fromBase64String(String base64String) throws JAXBException {
+		byte[] bytes = parseBase64Binary(base64String);
+		return fromXMLBytes(bytes); 
 	}
 
 	// ciphering ---------------------------------------------------------------
@@ -193,10 +232,9 @@ public class RequestTime {
 	 * Decipher is private because it should only be called by constructor when
 	 * receiving a CipheredView of the RequestTime.
 	 */
-	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+	private static RequestTimeView decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		RequestTimeView view = SecurityHelper.decipher(RequestTimeView.class, cipheredView, key);
-		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 }

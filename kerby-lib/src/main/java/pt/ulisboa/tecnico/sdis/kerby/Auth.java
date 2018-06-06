@@ -248,7 +248,7 @@ public class Auth {
 		return view;
 	}
 
-	/** Unmarshal auth to Base64 String. */
+	/** Unmarshal auth from Base64 String. */
 	private static AuthView fromBase64String(String base64String) throws JAXBException {
 		byte[] bytes = parseBase64Binary(base64String);
 		return fromXMLBytes(bytes); 
