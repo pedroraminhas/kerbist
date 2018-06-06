@@ -1,7 +1,5 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.cipher;
-import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.decipher;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXMLBytes;
@@ -10,9 +8,10 @@ import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlNodeToView;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.xmlToDate;
 
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Date;
 
+import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -31,6 +30,14 @@ public class Auth {
 
 	// Auth creation -------------------------------------------------------
 
+	/** Create a default view */
+	//public Auth() {
+	//	AuthView view = new AuthView();
+	//	view.setTimeRequest(dateToXML(new Date()));
+	//	view.setX("X");
+	//	setView(view);
+	//}
+	
 	/** Create AuthView from arguments. 
 	 * @param x A String with the Client Name.
 	 * @param timeRequest The Date of the Request.
@@ -42,14 +49,6 @@ public class Auth {
 		auth.setX(x);
 		return auth;
 	}
-	
-	/** Create a default view */
-	//public Auth() {
-	//	AuthView view = new AuthView();
-	//	view.setTimeRequest(dateToXML(new Date()));
-	//	view.setX("X");
-	//	setView(view);
-	//}
 	
 	/** Create auth from data view. 
 	 * */
@@ -65,21 +64,40 @@ public class Auth {
 		setView(authBuild(x, timeRequest));
 	}
 	
-	/** Create Auth from argument an XML Node.
+	
+	/** Create Auth from an XML Node.
 	 * @param node An XML Node containing an Auth
 	 * */
-	public Auth(Node node) throws JAXBException {
-		fromXMLNode(node);
+	public static Auth makeAuthFromXMLNode(Node node) throws JAXBException {
+		AuthView view = fromXMLNode(node);
+		return new Auth(view);
 	}
 	
 	/** Create Auth from a Ciphered AuthView.
 	 * @param view A Ciphered AuthView.
 	 * @param key The Key used to decipher the View.
 	 * */
-	public Auth(CipheredView view, Key key) throws KerbyException {
-		decipher(view, key);
+	public static Auth makeAuthFromCipheredView(CipheredView cipheredView, Key key) throws KerbyException {
+		AuthView view = decipher(cipheredView, key);
+		return new Auth(view);
+	}
+	
+	/** Create Auth from a XML Bytes.
+	 * @param node A byte array representing an Auth
+	 * */
+	public static Auth makeAuthFromXMLBytes(byte[] bytes) throws JAXBException {
+		AuthView view = fromXMLBytes(bytes);
+		return new Auth(view);
 	}
 
+	/** Create Auth from a Base64 String.
+	 * @param node A Base64 String representing an Auth
+	 * */
+	public static Auth makeAuthFromBase64String(String base64String) throws JAXBException {
+		AuthView view = fromBase64String(base64String);
+		return new Auth(view);
+	}
+	
 	// After construction, view can never be null, and can never be set to null.
 	// This invariant is assumed to be true in the remaining code.
 
@@ -207,23 +225,35 @@ public class Auth {
 	public byte[] toXMLBytes(String authTagName) throws JAXBException {
 		return viewToXMLBytes(AuthView.class, view, new QName(authTagName));
 	}
+	
+	/** Marshal auth to Base64 String. */
+	public String toBase64String(String authTagName) throws JAXBException {
+		byte[] xmlBytes = viewToXMLBytes(AuthView.class, view, new QName(authTagName));
+		return printBase64Binary(xmlBytes);
+	}
 
 	/**
 	 * Unmarshal auth from XML document.
 	 */
-	public void fromXMLNode(Node xml) throws JAXBException {
+	private static AuthView fromXMLNode(Node xml) throws JAXBException {
 		AuthView view= xmlNodeToView(AuthView.class, xml);
 		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 	/** Unmarshal byte array to a view object. */
-	public void fromXMLBytes(byte[] bytes) throws JAXBException {
+	private static AuthView fromXMLBytes(byte[] bytes) throws JAXBException {
 		AuthView view = xmlBytesToView(AuthView.class, bytes);
 		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
+	/** Unmarshal auth to Base64 String. */
+	private static AuthView fromBase64String(String base64String) throws JAXBException {
+		byte[] bytes = parseBase64Binary(base64String);
+		return fromXMLBytes(bytes); 
+	}
+	
 	// sealing ---------------------------------------------------------------
 	/**
 	 * Ciphers the Auth.
@@ -236,10 +266,10 @@ public class Auth {
 	/**
 	 * Creates an Auth from a Ciphered Auth.
 	 * */
-	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+	private static AuthView decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		AuthView view = SecurityHelper.decipher(AuthView.class, cipheredView, key);
 		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 }
