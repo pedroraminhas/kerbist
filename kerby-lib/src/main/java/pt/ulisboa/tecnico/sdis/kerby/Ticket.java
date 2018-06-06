@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
+import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.recodeKey;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXML;
@@ -56,9 +58,37 @@ public class Ticket {
 		setView(view);
 	}
 
-	/** Create ticket from ciphered data view and key. */
-	public Ticket(CipheredView cipheredView, Key key) throws KerbyException {
-		decipher(cipheredView, key);
+	/** Create Ticket from an XML Node.
+	 * @param node An XML Node containing a Ticket
+	 * */
+	public static Ticket makeTicketFromXMLNode(Node node) throws JAXBException {
+		TicketView view = fromXMLNode(node);
+		return new Ticket(view);
+	}
+	
+	/** Create Ticket from a Ciphered TicketView.
+	 * @param view A Ciphered TicketView.
+	 * @param key The Key used to decipher the View.
+	 * */
+	public static Ticket makeTicketFromCipheredView(CipheredView cipheredView, Key key) throws KerbyException {
+		TicketView view = decipher(cipheredView, key);
+		return new Ticket(view);
+	}
+	
+	/** Create Ticket from XML Bytes.
+	 * @param node A byte array representing an Ticket
+	 * */
+	public static Ticket makeTicketFromXMLBytes(byte[] bytes) throws JAXBException {
+		TicketView view = fromXMLBytes(bytes);
+		return new Ticket(view);
+	}
+
+	/** Create Ticket from a Base64 String.
+	 * @param node A Base64 String representing a Ticket
+	 * */
+	public static Ticket makeTicketFromBase64String(String base64String) throws JAXBException {
+		TicketView view = fromBase64String(base64String);
+		return new Ticket(view);
 	}
 
 	// After construction, view can never be null, and can never be set to null.
@@ -263,20 +293,30 @@ public class Ticket {
 		return viewToXMLBytes(TicketView.class, view, new QName(ticketTagName));
 	}
 
+	/** Marshal ticket to Base64 String. */
+	public String toBase64String(String ticketTagName) throws JAXBException {
+		byte[] xmlBytes = viewToXMLBytes(TicketView.class, view, new QName(ticketTagName));
+		return printBase64Binary(xmlBytes);
+	}
+	
 	/**
 	 * Unmarshal ticket from XML document.
 	 */
-	public void fromXMLNode(Node xml) throws JAXBException {
+	private static TicketView fromXMLNode(Node xml) throws JAXBException {
 		TicketView view = xmlNodeToView(TicketView.class, xml);
-		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 	/** Unmarshal byte array to a view object. */
-	public void fromXMLBytes(byte[] bytes) throws JAXBException {
+	private static TicketView fromXMLBytes(byte[] bytes) throws JAXBException {
 		TicketView view = xmlBytesToView(TicketView.class, bytes);
-		// set view should not allow null
-		setView(view);
+		return view;
+	}
+	
+	/** Unmarshal ticket from Base64 String. */
+	private static TicketView fromBase64String(String base64String) throws JAXBException {
+		byte[] bytes = parseBase64Binary(base64String);
+		return fromXMLBytes(bytes); 
 	}
 
 	// ciphering ---------------------------------------------------------------
@@ -289,10 +329,9 @@ public class Ticket {
 	 * Decipher is private because it should only be called by constructor when
 	 * receiving a CipheredView of the ticket.
 	 */
-	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+	private static TicketView decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		TicketView view = SecurityHelper.decipher(TicketView.class, cipheredView, key);
-		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 }
