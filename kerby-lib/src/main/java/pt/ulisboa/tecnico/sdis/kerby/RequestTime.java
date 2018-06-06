@@ -57,7 +57,7 @@ public class RequestTime {
 	}
 	
 	/** Create RequestTime from an XML Node.
-	 * @param node An XML Node containing an RequestTime
+	 * @param node An XML Node containing a RequestTime
 	 * */
 	public static RequestTime makeRequestTimeFromXMLNode(Node node) throws JAXBException {
 		RequestTimeView view = fromXMLNode(node);

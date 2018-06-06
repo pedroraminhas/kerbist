@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.sdis.kerby;
 
+import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import static pt.ulisboa.tecnico.sdis.kerby.SecurityHelper.recodeKey;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.dateToXML;
 import static pt.ulisboa.tecnico.sdis.kerby.XMLHelper.viewToXML;
@@ -45,9 +47,37 @@ public class SessionKey {
 		setView(view);
 	}
 
-	/** Create SessionKey from ciphered data view and key. */
-	public SessionKey(CipheredView cipheredView, Key key) throws KerbyException {
-		decipher(cipheredView, key);
+	/** Create SessionKey from an XML Node.
+	 * @param node An XML Node containing a SessionKey
+	 * */
+	public static SessionKey makeSessionKeyFromXMLNode(Node node) throws JAXBException {
+		SessionKeyView view = fromXMLNode(node);
+		return new SessionKey(view);
+	}
+	
+	/** Create SessionKey from a Ciphered SessionKeyView.
+	 * @param view A Ciphered SessionKeyView.
+	 * @param key The Key used to decipher the View.
+	 * */
+	public static SessionKey makeSessionKeyFromCipheredView(CipheredView cipheredView, Key key) throws KerbyException {
+		SessionKeyView view = decipher(cipheredView, key);
+		return new SessionKey(view);
+	}
+	
+	/** Create SessionKey from a XML Bytes.
+	 * @param node A byte array representing a SessionKey
+	 * */
+	public static SessionKey makeSessionKeyFromXMLBytes(byte[] bytes) throws JAXBException {
+		SessionKeyView view = fromXMLBytes(bytes);
+		return new SessionKey(view);
+	}
+
+	/** Create SessionKey from a Base64 String.
+	 * @param node A Base64 String representing a SessionKey
+	 * */
+	public static SessionKey makeSessionKeyFromBase64String(String base64String) throws JAXBException {
+		SessionKeyView view = fromBase64String(base64String);
+		return new SessionKey(view);
 	}
 	
 	// After construction, view can never be null, and can never be set to null.
@@ -174,21 +204,31 @@ public class SessionKey {
 	public byte[] toXMLBytes(String sessionKeyTagName) throws JAXBException {
 		return viewToXMLBytes(SessionKeyView.class, view, new QName(sessionKeyTagName));
 	}
+	
+	/** Marshal SessionKey to Base64 String. */
+	public String toBase64String(String sessionKeyTagName) throws JAXBException {
+		byte[] xmlBytes = viewToXMLBytes(SessionKeyView.class, view, new QName(sessionKeyTagName));
+		return printBase64Binary(xmlBytes);
+	}
 
 	/**
 	 * Unmarshal SessionKey from XML document.
 	 */
-	public void fromXMLNode(Node xml) throws JAXBException {
+	private static SessionKeyView fromXMLNode(Node xml) throws JAXBException {
 		SessionKeyView view = xmlNodeToView(SessionKeyView.class, xml);
-		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 	/** Unmarshal byte array to a view object. */
-	public void fromXMLBytes(byte[] bytes) throws JAXBException {
+	private static SessionKeyView fromXMLBytes(byte[] bytes) throws JAXBException {
 		SessionKeyView view = xmlBytesToView(SessionKeyView.class, bytes);
-		// set view should not allow null
-		setView(view);
+		return view;
+	}
+	
+	/** Unmarshal sessionKey from Base64 String. */
+	private static SessionKeyView fromBase64String(String base64String) throws JAXBException {
+		byte[] bytes = parseBase64Binary(base64String);
+		return fromXMLBytes(bytes); 
 	}
 
 	// ciphering ---------------------------------------------------------------
@@ -197,10 +237,9 @@ public class SessionKey {
 		return SecurityHelper.cipher(SessionKeyView.class, view, key);
 	}
 
-	private void decipher(CipheredView cipheredView, Key key) throws KerbyException {
+	private static SessionKeyView decipher(CipheredView cipheredView, Key key) throws KerbyException {
 		SessionKeyView view = SecurityHelper.decipher(SessionKeyView.class, cipheredView, key);
-		// set view should not allow null
-		setView(view);
+		return view;
 	}
 
 }
