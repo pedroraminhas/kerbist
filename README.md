@@ -124,7 +124,7 @@ For the versions available, see the [tags on this repository](https://github.com
 
 * **Miguel L. Pardal** - *Initial work* - [miguelpardal](https://github.com/miguelpardal)
 * **Guilherme Ilunga** - *server implementation* - [GIlunga](https://github.com/GIlunga)
-* **Miguel Amaral** - *handler library* - [miguel-amarall](https://github.com/miguel-amaral)
+* **Miguel Amaral** - *handler library* - [miguel-amaral](https://github.com/miguel-amaral)
 
 See also the list of [contributors](https://github.com/tecnico-distsys/kerbist/contributors) who participated in this project.
 
