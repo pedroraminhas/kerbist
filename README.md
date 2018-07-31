@@ -60,6 +60,16 @@ javac -version
 mvn -version
 ```
 
+The UDDI Naming library is required and needs to be manually downloaded and installed:
+
+```
+git clone https://github.com/tecnico-distsys/naming
+cd naming
+cd uddi-naming
+mvn clean install -DskipTests
+```
+
+
 ### Installing
 
 To compile and install all modules:
